@@ -1,0 +1,73 @@
+// TRAUMA BOX — Token Economy Schema
+// 1 Token = $0.01 | Stories cost 10–100 tokens
+// SQLite for dev, swap to PostgreSQL for production
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── USERS ──────────────────────────────────────────
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  displayName   String   @default("SUBJECT_UNKNOWN")
+  tokenBalance  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // A user's transaction ledger
+  transactions Transaction[]
+  // Content they've unlocked
+  library      Library[]
+  // Stripe customer ID for linking payments
+  stripeCustomerId String? @unique
+}
+
+// ─── CONTENT ────────────────────────────────────────
+model Content {
+  id              String   @id @default(cuid())
+  caseFileId      String   @unique           // e.g. "ATCS-001"
+  title           String
+  series          String   @default("Uncategorized")
+  tokenCost       Int                         // 10–100 tokens
+  status          String   @default("LEAKED") // LEAKED | OPENED | REDACTED
+  classification  String   @default("UNKNOWN")
+  description     String   @default("")
+  sideEffects     String   @default("")
+  consumptionTime String   @default("")
+  createdAt       DateTime @default(now())
+
+  // Who has unlocked this
+  unlockedBy Library[]
+}
+
+// ─── LIBRARY (Unlocked Content Junction) ────────────
+model Library {
+  id         String   @id @default(cuid())
+  userId     String
+  contentId  String
+  unlockedAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  content Content @relation(fields: [contentId], references: [id])
+
+  @@unique([userId, contentId]) // Can only unlock once
+}
+
+// ─── TRANSACTIONS (The Ledger) ──────────────────────
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int                              // + for credits, - for debits
+  type      String                           // PURCHASE | SPEND | BONUS | REFUND
+  detail    String   @default("")            // Human-readable description
+  reference String?                          // Stripe payment ID, content ID, etc.
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
