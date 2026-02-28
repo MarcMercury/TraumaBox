@@ -1,22 +1,17 @@
 // ─── Database Seed ──────────────────────────────────
 // Populates the Content table with case files & their token costs
-// Run with: npx tsx --tsconfig tsconfig.json prisma/seed.ts
+// Run with: npx tsx prisma/seed.ts
 
 import "dotenv/config";
-import path from "path";
 import { PrismaClient } from "../src/generated/prisma/client.js";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-// DATABASE_URL is "file:./dev.db" — relative to project root
-const rawUrl = process.env.DATABASE_URL ?? "file:./dev.db";
-const filePart = rawUrl.replace(/^file:\.?\//, "");
-const absPath = path.resolve(process.cwd(), filePart);
-const dbUrl = `file:${absPath}`;
+const url = process.env.DATABASE_URL;
+if (!url) throw new Error("DATABASE_URL not set");
 
-console.log("DB URL:", dbUrl);
+console.log("Connecting to PostgreSQL...");
 
-// PrismaLibSql is an adapter factory — pass config, not a client
-const adapter = new PrismaLibSql({ url: dbUrl });
+const adapter = new PrismaPg({ connectionString: url });
 const prisma = new PrismaClient({ adapter });
 
 const CONTENT_SEED = [
