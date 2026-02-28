@@ -26,7 +26,7 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      content: content.map((c) => ({
+      content: content.map((c: any) => ({
         id: c.id,
         caseFileId: c.caseFileId,
         title: c.title,
@@ -36,7 +36,7 @@ export async function GET() {
         classification: c.classification,
         description: c.description,
         totalUnlocks: c._count.unlockedBy,
-        totalEarned: c.revenueLedger.reduce((sum, r) => sum + r.creatorShare, 0),
+        totalEarned: c.revenueLedger.reduce((sum: number, r: { creatorShare: number }) => sum + r.creatorShare, 0),
         createdAt: c.createdAt,
       })),
     });

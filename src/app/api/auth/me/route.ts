@@ -54,7 +54,7 @@ export async function GET() {
       email: user.email,
       displayName: user.displayName,
       tokenBalance: user.tokenBalance,
-      unlockedCaseFileIds: library.map((l) => l.content.caseFileId),
+      unlockedCaseFileIds: library.map((l: { content: { caseFileId: string } }) => l.content.caseFileId),
       createdAt: user.createdAt,
     });
   } catch (error) {

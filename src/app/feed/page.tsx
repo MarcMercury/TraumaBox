@@ -1,97 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useTokens } from "@/components/TokenProvider";
 
-// Sample case files — will eventually come from Supabase
-// tokenCost: price in tokens (1 token = $0.01)
-const CASE_FILES = [
-  {
-    id: "ATCS-001",
-    title: "The Hindenburg: A Hot Air Balloon Story",
-    series: "Absolutely Terrible Children's Stories",
-    status: "LEAKED" as const,
-    sideEffects: "Mild existential dread, inappropriate laughter",
-    consumptionTime: "4 minutes of your life you won't get back",
-    classification: "CATASTROPHIC",
-    tokenCost: 50,
-    thumbnail: null,
-    file: "/ATCS/ATCS%20B1.pdf",
-    description:
-      "Little Timmy learns about the magic of flying — and the slightly less magical part where everything catches fire and people scream.",
-  },
-  {
-    id: "ATCS-002",
-    title: "Pompeii: A Nature Walk Gone Wrong",
-    series: "Absolutely Terrible Children's Stories",
-    status: "OPENED" as const,
-    sideEffects: "Volcanic anxiety, history trauma",
-    consumptionTime: "5 minutes of escalating discomfort",
-    classification: "CATASTROPHIC",
-    tokenCost: 50,
-    thumbnail: null,
-    file: null,
-    description:
-      "Join young Marcus on an educational tour of his lovely city! Spoiler: the mountain is not sleeping.",
-  },
-  {
-    id: "ATCS-003",
-    title: "The Titanic: A Boat Ride Adventure",
-    series: "Absolutely Terrible Children's Stories",
-    status: "LEAKED" as const,
-    sideEffects: "Aquaphobia, trust issues with icebergs",
-    consumptionTime: "6 minutes of sinking feeling",
-    classification: "CATASTROPHIC",
-    tokenCost: 60,
-    thumbnail: null,
-    file: null,
-    description:
-      "An unsinkable ship meets a very sink-able reality. Features fun activities like 'spot the iceberg' and 'count the lifeboats' (trick question — there aren't enough).",
-  },
-  {
-    id: "ATCS-004",
-    title: "Chernobyl: A Glowing Bedtime Story",
-    series: "Absolutely Terrible Children's Stories",
-    status: "REDACTED" as const,
-    sideEffects: "Radiophobia, third arm growth (unconfirmed)",
-    consumptionTime: "3 minutes with a half-life of forever",
-    classification: "NUCLEAR",
-    tokenCost: 100,
-    thumbnail: null,
-    file: null,
-    description:
-      "Little Svetlana notices the power plant is glowing tonight! How pretty! This cannot possibly end poorly.",
-  },
-  {
-    id: "ATCS-005",
-    title: "The Donner Party: A Camping Cookbook",
-    series: "Absolutely Terrible Children's Stories",
-    status: "LEAKED" as const,
-    sideEffects: "Loss of appetite, camping phobia, trust issues",
-    consumptionTime: "4 minutes of increasing hunger",
-    classification: "GASTRONOMIC",
-    tokenCost: 50,
-    thumbnail: null,
-    file: null,
-    description:
-      "The pioneers packed everything for their trip west! Well, almost everything. Mostly, they forgot enough food. But necessity is the mother of invention... and some other things.",
-  },
-  {
-    id: "TB-GAME-001",
-    title: "Trauma Bingo",
-    series: "Interactive Containment",
-    status: "OPENED" as const,
-    sideEffects: "Competitive suffering, hollow victory",
-    consumptionTime: "As long as your soul lasts",
-    classification: "INTERACTIVE",
-    tokenCost: 25,
-    thumbnail: null,
-    file: null,
-    description:
-      "Mark off historical disasters as they're read aloud! First to fill a row wins absolutely nothing of value.",
-  },
-];
+interface CaseFile {
+  id: string;
+  caseFileId: string;
+  title: string;
+  series: string;
+  status: "LEAKED" | "OPENED" | "REDACTED";
+  sideEffects: string;
+  consumptionTime: string;
+  classification: string;
+  tokenCost: number;
+  filePath: string | null;
+  description: string;
+  creatorName: string;
+  creatorId: string | null;
+  totalUnlocks: number;
+}
 
 type StatusType = "REDACTED" | "LEAKED" | "OPENED";
 
@@ -102,16 +30,28 @@ const STATUS_CONFIG: Record<StatusType, { class: string; icon: string }> = {
 };
 
 export default function FeedPage() {
+  const [caseFiles, setCaseFiles] = useState<CaseFile[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusType | "ALL">("ALL");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const { user, hasUnlocked, unlockContent } = useTokens();
   const [unlocking, setUnlocking] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ id: string; msg: string; ok: boolean } | null>(null);
 
+  useEffect(() => {
+    fetch("/api/content")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.content) setCaseFiles(data.content);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
   const filtered =
     filter === "ALL"
-      ? CASE_FILES
-      : CASE_FILES.filter((f) => f.status === filter);
+      ? caseFiles
+      : caseFiles.filter((f) => f.status === filter);
 
   const handleUnlock = async (caseFileId: string) => {
     setUnlocking(caseFileId);
@@ -120,6 +60,16 @@ export default function FeedPage() {
     setFeedback({ id: caseFileId, msg: result.message, ok: result.success });
     setUnlocking(null);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="font-mono text-sm text-[#555] animate-pulse">
+          LOADING CASE FILES FROM CONTAINMENT DATABASE...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -135,8 +85,22 @@ export default function FeedPage() {
           </h1>
         </div>
         <p className="font-mono text-xs text-[#555] ml-5">
-          CLASSIFIED CONTENT REPOSITORY — {CASE_FILES.length} CASE FILES LOADED
+          OPEN MARKETPLACE — {caseFiles.length} CASE FILES FROM {new Set(caseFiles.map((f) => f.creatorName)).size} CONTRIBUTORS
         </p>
+      </div>
+
+      {/* Marketplace Banner */}
+      <div className="border border-[#222] bg-[#0d0d0d] p-4 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="font-mono text-xs text-[#888]">
+          <span className="text-[var(--terminal-green)]">THE LEAK PROTOCOL</span> — Anyone can publish.
+          Creators set prices. You spend tokens. They get 90%. We get 10%. Capitalism meets chaos.
+        </div>
+        <Link
+          href="/studio"
+          className="px-4 py-2 border border-[var(--terminal-green)] text-[var(--terminal-green)] font-mono text-xs hover:bg-[var(--terminal-green)] hover:text-black transition-all whitespace-nowrap"
+        >
+          ⬆ SELL YOUR SOUL (90% COMMISSION) →
+        </Link>
       </div>
 
       {/* Filters */}
@@ -152,7 +116,7 @@ export default function FeedPage() {
                 : "border-[#333] text-[#666] hover:border-[#555] hover:text-[#999]"
             }`}
           >
-            {s === "ALL" ? `ALL [${CASE_FILES.length}]` : `${s} [${CASE_FILES.filter((f) => f.status === s).length}]`}
+            {s === "ALL" ? `ALL [${caseFiles.length}]` : `${s} [${caseFiles.filter((f) => f.status === s).length}]`}
           </button>
         ))}
       </div>
@@ -161,23 +125,23 @@ export default function FeedPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((file, index) => (
           <div
-            key={file.id}
+            key={file.caseFileId}
             className="case-file p-4 glitch-hover"
-            onMouseEnter={() => setHoveredId(file.id)}
+            onMouseEnter={() => setHoveredId(file.caseFileId)}
             onMouseLeave={() => setHoveredId(null)}
             style={{ animationDelay: `${index * 100}ms` }}
           >
             {/* File header */}
             <div className="flex items-center justify-between mb-3">
               <span className="font-mono text-[10px] text-[#555]">
-                CASE: {file.id}
+                CASE: {file.caseFileId}
               </span>
               <span
                 className={`${
-                  STATUS_CONFIG[file.status].class
+                  STATUS_CONFIG[file.status]?.class ?? ""
                 } px-2 py-0.5 text-[10px] font-mono font-bold`}
               >
-                {STATUS_CONFIG[file.status].icon} {file.status}
+                {STATUS_CONFIG[file.status]?.icon ?? "?"} {file.status}
               </span>
             </div>
 
@@ -199,7 +163,7 @@ export default function FeedPage() {
                     {file.classification}
                   </div>
                   {/* Hover scan effect */}
-                  {hoveredId === file.id && (
+                  {hoveredId === file.caseFileId && (
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent)] to-transparent opacity-10 animate-pulse" />
                   )}
                 </div>
@@ -211,9 +175,14 @@ export default function FeedPage() {
               {file.title}
             </h3>
 
-            {/* Series */}
-            <div className="font-mono text-[10px] text-[var(--accent)] mb-3 tracking-wider">
-              {file.series.toUpperCase()}
+            {/* Series + Creator Attribution */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="font-mono text-[10px] text-[var(--accent)] tracking-wider">
+                {file.series.toUpperCase()}
+              </div>
+              <div className="font-mono text-[10px] text-[#555]">
+                by <span className={file.creatorId ? "text-[var(--terminal-green)]" : "text-[#777]"}>{file.creatorName}</span>
+              </div>
             </div>
 
             {/* Description */}
@@ -236,18 +205,22 @@ export default function FeedPage() {
                 <span className="text-[#777]">{file.consumptionTime}</span>
               </div>
               <div className="flex justify-between font-mono text-[10px]">
+                <span className="text-[#555]">UNLOCKED BY:</span>
+                <span className="text-[#777]">{file.totalUnlocks} {file.totalUnlocks === 1 ? "soul" : "souls"}</span>
+              </div>
+              <div className="flex justify-between font-mono text-[10px]">
                 <span className="text-[#555]">TOKEN COST:</span>
-                <span className={`font-bold ${hasUnlocked(file.id) ? "text-[var(--terminal-green)]" : "text-[var(--accent)]"}`}>
-                  {hasUnlocked(file.id) ? "OWNED ✓" : `${file.tokenCost} T ($${(file.tokenCost * 0.01).toFixed(2)})`}
+                <span className={`font-bold ${hasUnlocked(file.caseFileId) ? "text-[var(--terminal-green)]" : "text-[var(--accent)]"}`}>
+                  {hasUnlocked(file.caseFileId) ? "OWNED ✓" : `${file.tokenCost} T ($${(file.tokenCost * 0.01).toFixed(2)})`}
                 </span>
               </div>
             </div>
 
             {/* Action button — token-gated */}
-            {hasUnlocked(file.id) ? (
-              file.file ? (
+            {hasUnlocked(file.caseFileId) ? (
+              file.filePath ? (
                 <a
-                  href={file.file}
+                  href={file.filePath}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full mt-4 py-2 font-mono text-xs tracking-wider border text-center transition-all border-[var(--terminal-green)] text-[var(--terminal-green)] hover:bg-[var(--terminal-green)] hover:text-black"
@@ -271,17 +244,17 @@ export default function FeedPage() {
               </button>
             ) : (
               <button
-                onClick={() => handleUnlock(file.id)}
-                disabled={unlocking === file.id || (user?.tokenBalance ?? 0) < file.tokenCost}
+                onClick={() => handleUnlock(file.caseFileId)}
+                disabled={unlocking === file.caseFileId || (user?.tokenBalance ?? 0) < file.tokenCost}
                 className={`w-full mt-4 py-2 font-mono text-xs tracking-wider border transition-all ${
-                  unlocking === file.id
+                  unlocking === file.caseFileId
                     ? "border-[var(--accent)] text-[var(--accent)] animate-pulse"
                     : (user?.tokenBalance ?? 0) >= file.tokenCost
                     ? "border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black"
                     : "border-[#333] text-[#555] cursor-not-allowed"
                 }`}
               >
-                {unlocking === file.id
+                {unlocking === file.caseFileId
                   ? "BURNING TOKENS..."
                   : (user?.tokenBalance ?? 0) >= file.tokenCost
                   ? `Spend ${file.tokenCost} Tokens to ruin your day →`
@@ -290,7 +263,7 @@ export default function FeedPage() {
             )}
 
             {/* Feedback toast */}
-            {feedback?.id === file.id && (
+            {feedback?.id === file.caseFileId && (
               <div className={`mt-2 px-3 py-1.5 font-mono text-[10px] border ${
                 feedback.ok
                   ? "border-[var(--terminal-green)] text-[var(--terminal-green)] bg-[rgba(0,255,65,0.05)]"
@@ -303,10 +276,20 @@ export default function FeedPage() {
         ))}
       </div>
 
+      {/* Empty state */}
+      {filtered.length === 0 && (
+        <div className="text-center py-16 border border-[#222] bg-[#0d0d0d]">
+          <div className="text-4xl mb-4 opacity-20">📁</div>
+          <p className="font-mono text-sm text-[#555]">
+            {filter === "ALL" ? "No case files found. The void is empty." : `No ${filter} case files found.`}
+          </p>
+        </div>
+      )}
+
       {/* Bottom status bar */}
       <div className="mt-8 border-t border-[#1a1a1a] pt-4 flex flex-wrap items-center justify-between font-mono text-[10px] text-[#444]">
         <span>
-          DISPLAYING {filtered.length} OF {CASE_FILES.length} CASE FILES
+          DISPLAYING {filtered.length} OF {caseFiles.length} CASE FILES
         </span>
         <span>
           LAST CONTAINMENT AUDIT:{" "}

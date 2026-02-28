@@ -1,9 +1,23 @@
 // ─── Database Seed ──────────────────────────────────
 // Populates the Content table with case files & their token costs
+// Run with: npx tsx --tsconfig tsconfig.json prisma/seed.ts
 
-import { PrismaClient } from "../src/generated/prisma";
+import "dotenv/config";
+import { PrismaClient } from "../src/generated/prisma/client.js";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { createClient } from "@libsql/client";
 
-const prisma = new PrismaClient();
+// Resolve the database URL — "file:./dev.db" from .env is relative to prisma/
+// libsql requires an absolute file path
+const rawUrl = process.env.DATABASE_URL ?? "file:./dev.db";
+const dbPath = rawUrl.replace("file:", "").replace("./", "");
+const absoluteUrl = `file:/workspaces/TraumaBox/prisma/${dbPath}`;
+
+console.log("DB URL:", absoluteUrl);
+
+const libsql = createClient({ url: absoluteUrl });
+const adapter = new PrismaLibSql(libsql);
+const prisma = new PrismaClient({ adapter, datasourceUrl: absoluteUrl } as any);
 
 const CONTENT_SEED = [
   {
@@ -16,6 +30,7 @@ const CONTENT_SEED = [
     description: "Little Timmy learns about the magic of flying — and the slightly less magical part where everything catches fire and people scream.",
     sideEffects: "Mild existential dread, inappropriate laughter",
     consumptionTime: "4 minutes of your life you won't get back",
+    filePath: "/ATCS/ATCS%20B1.pdf",
   },
   {
     caseFileId: "ATCS-002",

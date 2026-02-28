@@ -34,14 +34,14 @@ export async function GET() {
     ]);
 
     // Transform content into a more readable format
-    const contentWithStats = content.map((c) => ({
+    const contentWithStats = content.map((c: any) => ({
       id: c.id,
       caseFileId: c.caseFileId,
       title: c.title,
       tokenCost: c.tokenCost,
       status: c.status,
       totalUnlocks: c._count.unlockedBy,
-      totalRevenue: c.revenueLedger.reduce((sum, r) => sum + r.creatorShare, 0),
+      totalRevenue: c.revenueLedger.reduce((sum: number, r: { creatorShare: number }) => sum + r.creatorShare, 0),
       createdAt: c.createdAt,
     }));
 

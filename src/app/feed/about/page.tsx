@@ -113,7 +113,7 @@ export default function AboutPage() {
             },
             {
               q: "Can I submit my own terrible story ideas?",
-              a: "Yes. Please use the Contact form (when it exists). Include the historical event and why you think it deserves to be ruined further.",
+              a: "Yes! Trauma Box is now an open marketplace. Head to the Studio to submit your content, set your price (10-1000 tokens), and earn 90% of every sale. We take 10% to keep the lights on. Your content, your rights, our infrastructure. We call it the Leak Protocol.",
             },
             {
               q: "Do you have a moral compass?",

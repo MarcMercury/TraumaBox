@@ -62,7 +62,7 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      payouts: payouts.map((p) => ({
+      payouts: payouts.map((p: any) => ({
         id: p.id,
         tokenAmount: p.tokenAmount,
         usdAmount: (p.usdAmount / 100).toFixed(2),

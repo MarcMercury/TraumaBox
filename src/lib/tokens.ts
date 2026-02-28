@@ -3,6 +3,10 @@
 // Revenue split: 90% creator / 10% platform (containment fee)
 
 import { prisma } from "./db";
+import type { PrismaClient } from "@/generated/prisma/client";
+
+/** Transaction client type for interactive transactions */
+type TxClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
 
 /** Platform revenue split — the "containment fee" */
 export const PLATFORM_FEE_PERCENT = 10;
@@ -40,7 +44,7 @@ export async function creditTokens(
   detail: string,
   reference?: string
 ): Promise<{ balance: number }> {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: TxClient) => {
     // Credit the balance
     const user = await tx.user.update({
       where: { id: userId },
@@ -76,7 +80,7 @@ export async function unlockContent(
   contentId: string
 ): Promise<{ success: boolean; message: string; balance?: number }> {
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: TxClient) => {
       // Step 1: Get content cost + creator info
       const content = await tx.content.findUnique({
         where: { id: contentId },
@@ -267,7 +271,7 @@ export async function requestPayout(
   userId: string
 ): Promise<{ success: boolean; message: string; payoutId?: string }> {
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: TxClient) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
       if (!user) throw new Error("USER_NOT_FOUND");
       if (user.role !== "CONTRIBUTOR" && user.role !== "ADMIN") throw new Error("NOT_A_CONTRIBUTOR");

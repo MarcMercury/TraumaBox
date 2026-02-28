@@ -427,6 +427,120 @@ body {
   animation: boot-blink 1s step-end infinite;
 }
 
+/* ========== WALLET DISPLAY ========== */
+.wallet-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #222;
+  background: rgba(255, 102, 0, 0.03);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wallet-display:hover {
+  border-color: var(--accent);
+  background: rgba(255, 102, 0, 0.08);
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.1);
+}
+
+/* ========== TRANSACTION HISTORY ========== */
+.transaction-history {
+  font-family: var(--font-mono);
+}
+
+.transaction-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #1a1a1a;
+  background: #0a0a0a;
+  transition: all 0.15s;
+}
+
+.transaction-row:hover {
+  border-color: #333;
+  background: #111;
+}
+
+.transaction-row.glitch {
+  animation: tx-glitch 0.2s ease-out;
+}
+
+@keyframes tx-glitch {
+  0% { transform: translateX(-2px); opacity: 0.8; }
+  25% { transform: translateX(3px); opacity: 1; }
+  50% { transform: translateX(-1px); }
+  75% { transform: translateX(2px); opacity: 0.9; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+/* ========== CONTENT GATE ========== */
+.content-gate-flash {
+  animation: gate-flash 0.6s ease-out;
+}
+
+@keyframes gate-flash {
+  0% { opacity: 0; transform: scaleY(0); }
+  50% { opacity: 1; transform: scaleY(1.05); }
+  100% { opacity: 1; transform: scaleY(1); }
+}
+
+.content-gate-locked .lock-overlay {
+  position: relative;
+}
+
+.content-gate-locked .lock-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  animation: scan-line 3s linear infinite;
+}
+
+@keyframes scan-line {
+  0% { top: 0; opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { top: 100%; opacity: 0.4; }
+}
+
+/* ========== TOKEN SHOP MODAL ========== */
+.token-pack-card {
+  border: 1px solid #222;
+  padding: 1.5rem;
+  background: #0a0a0a;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.token-pack-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.1);
+}
+
+.token-pack-card.popular {
+  border-color: rgba(255, 102, 0, 0.4);
+}
+
+.token-pack-card.popular::before {
+  content: "MOST POPULAR";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--accent);
+  color: black;
+  font-size: 8px;
+  font-weight: bold;
+  padding: 2px 8px;
+  letter-spacing: 0.1em;
+}
+
 /* ========== GRID BACKGROUND ========== */
 .grid-bg {
   background-image:

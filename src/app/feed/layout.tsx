@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/feed/archives", label: "ARCHIVES", icon: "▤" },
   { href: "/feed/transactions", label: "LEDGER", icon: "◎" },
   { href: "/feed/shop", label: "TRAUMA KIT", icon: "☢" },
+  { href: "/studio", label: "STUDIO", icon: "⬆" },
   { href: "/feed/about", label: "DOSSIER", icon: "◈" },
 ];
 
@@ -123,6 +124,8 @@ export default function FeedLayout({
             <span>TERMS OF SUFFERING</span>
             <span>|</span>
             <span>PRIVACY (LOL)</span>
+            <span>|</span>
+            <Link href="/studio" className="text-[var(--terminal-green)] hover:text-[var(--accent)] transition-colors">CONTRIBUTE TO THE CHAOS</Link>
             <span>|</span>
             <span>
               STATUS: <span className="text-[var(--terminal-green)]">OPERATIONAL</span>
