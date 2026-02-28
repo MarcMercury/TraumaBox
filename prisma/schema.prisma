@@ -1,5 +1,6 @@
-// TRAUMA BOX — Token Economy Schema
-// 1 Token = $0.01 | Stories cost 10–100 tokens
+// TRAUMA BOX — Multi-Vendor Marketplace Schema
+// 1 Token = $0.01 | Creators set prices 10–1000 tokens
+// 90% to creator, 10% containment fee to platform
 // SQLite for dev, swap to PostgreSQL for production
 
 generator client {
@@ -13,37 +14,53 @@ datasource db {
 
 // ─── USERS ──────────────────────────────────────────
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  displayName   String   @default("SUBJECT_UNKNOWN")
-  tokenBalance  Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id               String   @id @default(cuid())
+  email            String   @unique
+  displayName      String   @default("SUBJECT_UNKNOWN")
+  tokenBalance     Int      @default(0)
+  role             String   @default("READER")       // READER | CONTRIBUTOR | ADMIN
+  bio              String   @default("")              // Creator profile blurb
+  stripeCustomerId String?  @unique                   // For buying tokens
+  stripeConnectId  String?  @unique                   // For receiving payouts
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // A user's transaction ledger
   transactions Transaction[]
   // Content they've unlocked
   library      Library[]
-  // Stripe customer ID for linking payments
-  stripeCustomerId String? @unique
+  // Content they've created (The Leak Protocol)
+  createdContent Content[]
+  // Payout requests
+  payouts      Payout[]
 }
 
 // ─── CONTENT ────────────────────────────────────────
 model Content {
   id              String   @id @default(cuid())
-  caseFileId      String   @unique           // e.g. "ATCS-001"
+  caseFileId      String   @unique           // e.g. "ATCS-001" or auto-generated
   title           String
   series          String   @default("Uncategorized")
-  tokenCost       Int                         // 10–100 tokens
-  status          String   @default("LEAKED") // LEAKED | OPENED | REDACTED
+  tokenCost       Int                         // 10–1000 tokens, set by creator
+  status          String   @default("PENDING") // PENDING | LEAKED | OPENED | REDACTED
   classification  String   @default("UNKNOWN")
   description     String   @default("")
   sideEffects     String   @default("")
   consumptionTime String   @default("")
+  body            String   @default("")      // Markdown content body
+  filePath        String?                    // Optional file/media attachment
   createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // The creator who submitted this content
+  creatorId  String?
+  creator    User?    @relation(fields: [creatorId], references: [id])
 
   // Who has unlocked this
   unlockedBy Library[]
+
+  // Revenue ledger for this content
+  revenueLedger RevenueLedger[]
 }
 
 // ─── LIBRARY (Unlocked Content Junction) ────────────
@@ -64,10 +81,40 @@ model Transaction {
   id        String   @id @default(cuid())
   userId    String
   amount    Int                              // + for credits, - for debits
-  type      String                           // PURCHASE | SPEND | BONUS | REFUND
+  type      String                           // PURCHASE | SPEND | BONUS | REFUND | CREATOR_EARNING | PLATFORM_FEE
   detail    String   @default("")            // Human-readable description
   reference String?                          // Stripe payment ID, content ID, etc.
   createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ─── REVENUE LEDGER (The Blood Money Trail) ─────────
+// Tracks every 90/10 split when content is purchased
+model RevenueLedger {
+  id           String   @id @default(cuid())
+  contentId    String
+  buyerId      String                        // Who spent the tokens
+  creatorId    String                        // Who gets 90%
+  totalTokens  Int                           // Total token cost of content
+  creatorShare Int                           // 90% to the creator
+  platformFee  Int                           // 10% containment fee
+  createdAt    DateTime @default(now())
+
+  content Content @relation(fields: [contentId], references: [id])
+}
+
+// ─── PAYOUTS (Compensation for Damages) ─────────────
+// When creators cash out their accumulated tokens
+model Payout {
+  id            String   @id @default(cuid())
+  userId        String
+  tokenAmount   Int                           // How many tokens cashed out
+  usdAmount     Int                           // Amount in cents ($0.01 per token)
+  status        String   @default("PENDING")  // PENDING | PROCESSING | COMPLETED | FAILED
+  stripePayoutId String?                      // Stripe Connect payout reference
+  requestedAt   DateTime @default(now())
+  completedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id])
 }

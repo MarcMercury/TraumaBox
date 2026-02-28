@@ -3,10 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { TokenProvider } from "@/components/TokenProvider";
+import WalletDisplay from "@/components/WalletDisplay";
+import TokenShop from "@/components/TokenShop";
 
 const NAV_ITEMS = [
   { href: "/feed", label: "FEED", icon: "◉" },
   { href: "/feed/archives", label: "ARCHIVES", icon: "▤" },
+  { href: "/feed/transactions", label: "LEDGER", icon: "◎" },
   { href: "/feed/shop", label: "TRAUMA KIT", icon: "☢" },
   { href: "/feed/about", label: "DOSSIER", icon: "◈" },
 ];
@@ -21,6 +25,7 @@ export default function FeedLayout({
   const [panicMode, setPanicMode] = useState(false);
   const [uptime, setUptime] = useState(0);
   const [cookieBanner, setCookieBanner] = useState(true);
+  const [shopOpen, setShopOpen] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,6 +55,7 @@ export default function FeedLayout({
   }
 
   return (
+    <TokenProvider>
     <div className="min-h-screen bg-black grid-bg">
       {/* Top Control Panel */}
       <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-[#222]">
@@ -69,6 +75,12 @@ export default function FeedLayout({
             </span>
             <span>{systemTime}</span>
           </div>
+        </div>
+
+        {/* Wallet bar */}
+        <div className="flex items-center justify-between px-4 py-1 border-b border-[#1a1a1a]">
+          <div className="font-mono text-[10px] text-[#444]">TOKEN SUBSYSTEM v1.0</div>
+          <WalletDisplay onShopClick={() => setShopOpen(true)} />
         </div>
 
         {/* Main nav */}
@@ -144,7 +156,11 @@ export default function FeedLayout({
           </div>
         </div>
       )}
+
+      {/* Token Shop Modal */}
+      <TokenShop isOpen={shopOpen} onClose={() => setShopOpen(false)} />
     </div>
+    </TokenProvider>
   );
 }
 

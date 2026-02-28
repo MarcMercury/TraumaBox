@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTokens } from "@/components/TokenProvider";
 
 // Sample case files — will eventually come from Supabase
+// tokenCost: price in tokens (1 token = $0.01)
 const CASE_FILES = [
   {
     id: "ATCS-001",
@@ -13,6 +15,7 @@ const CASE_FILES = [
     sideEffects: "Mild existential dread, inappropriate laughter",
     consumptionTime: "4 minutes of your life you won't get back",
     classification: "CATASTROPHIC",
+    tokenCost: 50,
     thumbnail: null,
     file: "/ATCS/ATCS%20B1.pdf",
     description:
@@ -26,6 +29,7 @@ const CASE_FILES = [
     sideEffects: "Volcanic anxiety, history trauma",
     consumptionTime: "5 minutes of escalating discomfort",
     classification: "CATASTROPHIC",
+    tokenCost: 50,
     thumbnail: null,
     file: null,
     description:
@@ -39,6 +43,7 @@ const CASE_FILES = [
     sideEffects: "Aquaphobia, trust issues with icebergs",
     consumptionTime: "6 minutes of sinking feeling",
     classification: "CATASTROPHIC",
+    tokenCost: 60,
     thumbnail: null,
     file: null,
     description:
@@ -52,6 +57,7 @@ const CASE_FILES = [
     sideEffects: "Radiophobia, third arm growth (unconfirmed)",
     consumptionTime: "3 minutes with a half-life of forever",
     classification: "NUCLEAR",
+    tokenCost: 100,
     thumbnail: null,
     file: null,
     description:
@@ -65,6 +71,7 @@ const CASE_FILES = [
     sideEffects: "Loss of appetite, camping phobia, trust issues",
     consumptionTime: "4 minutes of increasing hunger",
     classification: "GASTRONOMIC",
+    tokenCost: 50,
     thumbnail: null,
     file: null,
     description:
@@ -78,6 +85,7 @@ const CASE_FILES = [
     sideEffects: "Competitive suffering, hollow victory",
     consumptionTime: "As long as your soul lasts",
     classification: "INTERACTIVE",
+    tokenCost: 25,
     thumbnail: null,
     file: null,
     description:
@@ -96,11 +104,22 @@ const STATUS_CONFIG: Record<StatusType, { class: string; icon: string }> = {
 export default function FeedPage() {
   const [filter, setFilter] = useState<StatusType | "ALL">("ALL");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const { user, hasUnlocked, unlockContent } = useTokens();
+  const [unlocking, setUnlocking] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ id: string; msg: string; ok: boolean } | null>(null);
 
   const filtered =
     filter === "ALL"
       ? CASE_FILES
       : CASE_FILES.filter((f) => f.status === filter);
+
+  const handleUnlock = async (caseFileId: string) => {
+    setUnlocking(caseFileId);
+    setFeedback(null);
+    const result = await unlockContent(caseFileId);
+    setFeedback({ id: caseFileId, msg: result.message, ok: result.success });
+    setUnlocking(null);
+  };
 
   return (
     <div>
@@ -216,31 +235,69 @@ export default function FeedPage() {
                 <span className="text-[#555]">TIME COST:</span>
                 <span className="text-[#777]">{file.consumptionTime}</span>
               </div>
+              <div className="flex justify-between font-mono text-[10px]">
+                <span className="text-[#555]">TOKEN COST:</span>
+                <span className={`font-bold ${hasUnlocked(file.id) ? "text-[var(--terminal-green)]" : "text-[var(--accent)]"}`}>
+                  {hasUnlocked(file.id) ? "OWNED ✓" : `${file.tokenCost} T ($${(file.tokenCost * 0.01).toFixed(2)})`}
+                </span>
+              </div>
             </div>
 
-            {/* Action button */}
-            {file.file ? (
-              <a
-                href={file.file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full mt-4 py-2 font-mono text-xs tracking-wider border text-center transition-all border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black"
-              >
-                OPEN CASE FILE →
-              </a>
-            ) : (
+            {/* Action button — token-gated */}
+            {hasUnlocked(file.id) ? (
+              file.file ? (
+                <a
+                  href={file.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full mt-4 py-2 font-mono text-xs tracking-wider border text-center transition-all border-[var(--terminal-green)] text-[var(--terminal-green)] hover:bg-[var(--terminal-green)] hover:text-black"
+                >
+                  ◉ ACCESS GRANTED — OPEN CASE FILE →
+                </a>
+              ) : (
+                <button
+                  className="w-full mt-4 py-2 font-mono text-xs tracking-wider border border-[var(--terminal-green)] text-[var(--terminal-green)] cursor-default"
+                  disabled
+                >
+                  ◉ UNLOCKED — CONTENT PENDING UPLOAD
+                </button>
+              )
+            ) : file.status === "REDACTED" ? (
               <button
-                className={`w-full mt-4 py-2 font-mono text-xs tracking-wider border transition-all ${
-                  file.status === "REDACTED"
-                    ? "border-[#333] text-[#444] cursor-not-allowed"
-                    : "border-[#333] text-[#555] cursor-not-allowed"
-                }`}
+                className="w-full mt-4 py-2 font-mono text-xs tracking-wider border border-[#333] text-[#444] cursor-not-allowed"
                 disabled
               >
-                {file.status === "REDACTED"
-                  ? "ACCESS DENIED"
-                  : "PENDING LEAK"}
+                ACCESS DENIED — CLASSIFICATION: {file.classification}
               </button>
+            ) : (
+              <button
+                onClick={() => handleUnlock(file.id)}
+                disabled={unlocking === file.id || (user?.tokenBalance ?? 0) < file.tokenCost}
+                className={`w-full mt-4 py-2 font-mono text-xs tracking-wider border transition-all ${
+                  unlocking === file.id
+                    ? "border-[var(--accent)] text-[var(--accent)] animate-pulse"
+                    : (user?.tokenBalance ?? 0) >= file.tokenCost
+                    ? "border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black"
+                    : "border-[#333] text-[#555] cursor-not-allowed"
+                }`}
+              >
+                {unlocking === file.id
+                  ? "BURNING TOKENS..."
+                  : (user?.tokenBalance ?? 0) >= file.tokenCost
+                  ? `Spend ${file.tokenCost} Tokens to ruin your day →`
+                  : `Need ${file.tokenCost - (user?.tokenBalance ?? 0)} more tokens`}
+              </button>
+            )}
+
+            {/* Feedback toast */}
+            {feedback?.id === file.id && (
+              <div className={`mt-2 px-3 py-1.5 font-mono text-[10px] border ${
+                feedback.ok
+                  ? "border-[var(--terminal-green)] text-[var(--terminal-green)] bg-[rgba(0,255,65,0.05)]"
+                  : "border-red-500 text-red-500 bg-[rgba(255,0,0,0.05)]"
+              }`}>
+                {feedback.msg}
+              </div>
             )}
           </div>
         ))}
