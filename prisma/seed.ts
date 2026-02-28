@@ -3,21 +3,21 @@
 // Run with: npx tsx --tsconfig tsconfig.json prisma/seed.ts
 
 import "dotenv/config";
+import path from "path";
 import { PrismaClient } from "../src/generated/prisma/client.js";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { createClient } from "@libsql/client";
 
-// Resolve the database URL — "file:./dev.db" from .env is relative to prisma/
-// libsql requires an absolute file path
+// DATABASE_URL is "file:./dev.db" — relative to project root
 const rawUrl = process.env.DATABASE_URL ?? "file:./dev.db";
-const dbPath = rawUrl.replace("file:", "").replace("./", "");
-const absoluteUrl = `file:/workspaces/TraumaBox/prisma/${dbPath}`;
+const filePart = rawUrl.replace(/^file:\.?\//, "");
+const absPath = path.resolve(process.cwd(), filePart);
+const dbUrl = `file:${absPath}`;
 
-console.log("DB URL:", absoluteUrl);
+console.log("DB URL:", dbUrl);
 
-const libsql = createClient({ url: absoluteUrl });
-const adapter = new PrismaLibSql(libsql);
-const prisma = new PrismaClient({ adapter, datasourceUrl: absoluteUrl } as any);
+// PrismaLibSql is an adapter factory — pass config, not a client
+const adapter = new PrismaLibSql({ url: dbUrl });
+const prisma = new PrismaClient({ adapter });
 
 const CONTENT_SEED = [
   {

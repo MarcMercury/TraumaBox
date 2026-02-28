@@ -1,7 +1,7 @@
 // TRAUMA BOX — Multi-Vendor Marketplace Schema
 // 1 Token = $0.01 | Creators set prices 10–1000 tokens
 // 90% to creator, 10% containment fee to platform
-// SQLite for dev, swap to PostgreSQL for production
+// PostgreSQL via Supabase
 
 generator client {
   provider = "prisma-client"
@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // ─── USERS ──────────────────────────────────────────
