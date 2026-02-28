@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, TOKEN_PACKS } from "@/lib/stripe";
-import { prisma } from "@/lib/db";
+import { getSessionUser } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,10 +17,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get demo user
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    // Get current user
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });

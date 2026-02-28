@@ -5,7 +5,6 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { cookies } from "next/headers";
 
 const DEMO_EMAIL = "subject@trauma.box";
 

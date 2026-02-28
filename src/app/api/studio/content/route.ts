@@ -3,12 +3,11 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getSessionUser } from "@/lib/auth";
 
 export async function GET() {
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json({ error: "No user." }, { status: 401 });
@@ -26,7 +25,7 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      content: content.map((c: any) => ({
+      content: content.map((c: typeof content[number]) => ({
         id: c.id,
         caseFileId: c.caseFileId,
         title: c.title,

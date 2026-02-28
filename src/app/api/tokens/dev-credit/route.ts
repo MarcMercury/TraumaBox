@@ -3,8 +3,8 @@
 // Remove this in production!
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { creditTokens } from "@/lib/tokens";
+import { getSessionUser } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV === "production") {
@@ -15,9 +15,7 @@ export async function POST(request: NextRequest) {
     const { amount } = await request.json();
     const tokens = Math.min(Math.max(parseInt(amount, 10) || 100, 1), 99999);
 
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });

@@ -6,13 +6,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requestPayout } from "@/lib/tokens";
+import { getSessionUser } from "@/lib/auth";
 
 export async function POST() {
   try {
     // Demo user (production: parse session)
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json(
@@ -48,9 +47,7 @@ export async function POST() {
 // Get payout history
 export async function GET() {
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json({ error: "Ghost mode." }, { status: 401 });
@@ -62,7 +59,7 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      payouts: payouts.map((p: any) => ({
+      payouts: payouts.map((p: typeof payouts[number]) => ({
         id: p.id,
         tokenAmount: p.tokenAmount,
         usdAmount: (p.usdAmount / 100).toFixed(2),

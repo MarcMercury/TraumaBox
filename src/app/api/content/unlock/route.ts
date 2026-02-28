@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { unlockContent } from "@/lib/tokens";
+import { getSessionUser } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,9 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the current user (demo user for now)
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json(

@@ -58,13 +58,16 @@ export default function LandingPage() {
   useEffect(() => {
     if (phase !== "glitch") return;
 
-    setIsShaking(true);
+    const t0 = setTimeout(() => setIsShaking(true), 0);
     const t1 = setTimeout(() => {
       setIsShaking(false);
       setPhase("logo");
     }, 800);
 
-    return () => clearTimeout(t1);
+    return () => {
+      clearTimeout(t0);
+      clearTimeout(t1);
+    };
   }, [phase]);
 
   // Logo phase — fade in logo, then show enter button
@@ -224,19 +227,27 @@ export default function LandingPage() {
 }
 
 function GlitchBars({ visible }: { visible: boolean }) {
+  const [bars] = useState(() =>
+    Array.from({ length: 12 }, (_, i) => ({
+      top: `${Math.random() * 100}%`,
+      height: `${2 + Math.random() * 6}px`,
+      animation: `glitch-anim-1 ${0.1 + Math.random() * 0.3}s linear ${i * 0.05}s`,
+    }))
+  );
+
   if (!visible) return null;
   return (
     <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-      {Array.from({ length: 12 }).map((_, i) => (
+      {bars.map((bar, i) => (
         <div
           key={i}
           className="absolute bg-[var(--accent)] opacity-20"
           style={{
-            top: `${Math.random() * 100}%`,
+            top: bar.top,
             left: 0,
             width: "100%",
-            height: `${2 + Math.random() * 6}px`,
-            animation: `glitch-anim-1 ${0.1 + Math.random() * 0.3}s linear ${i * 0.05}s`,
+            height: bar.height,
+            animation: bar.animation,
           }}
         />
       ))}

@@ -2,15 +2,13 @@
 // Returns the creator's blood money stats
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { getCreatorStats, getCreatorRevenue } from "@/lib/tokens";
+import { getSessionUser } from "@/lib/auth";
 
 export async function GET() {
   try {
     // Demo user (production: parse session)
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json(
@@ -34,7 +32,7 @@ export async function GET() {
     ]);
 
     // Transform content into a more readable format
-    const contentWithStats = content.map((c: any) => ({
+    const contentWithStats = content.map((c: typeof content[number]) => ({
       id: c.id,
       caseFileId: c.caseFileId,
       title: c.title,

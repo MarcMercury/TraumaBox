@@ -57,6 +57,9 @@ export default function TransactionHistory() {
     BONUS: { color: "text-cyan-400", icon: "★", label: "BONUS" },
     SPEND: { color: "text-red-500", icon: "▼", label: "DEBIT" },
     REFUND: { color: "text-yellow-500", icon: "↩", label: "REFUND" },
+    CREATOR_EARNING: { color: "text-[var(--terminal-green)]", icon: "◉", label: "EARNED" },
+    PLATFORM_FEE: { color: "text-[#666]", icon: "◈", label: "FEE" },
+    PAYOUT: { color: "text-[var(--accent)]", icon: "⬇", label: "PAYOUT" },
   };
 
   const formatDate = (dateStr: string) => {
@@ -115,7 +118,7 @@ export default function TransactionHistory() {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 mb-4 font-mono text-[10px]">
         <span className="text-[#555] mr-1">FILTER:</span>
-        {["ALL", "PURCHASE", "SPEND", "BONUS", "REFUND"].map((type) => (
+        {["ALL", "PURCHASE", "SPEND", "BONUS", "CREATOR_EARNING", "PAYOUT", "REFUND"].map((type) => (
           <button
             key={type}
             onClick={() => setFilter(type)}

@@ -5,6 +5,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
+// Force dynamic since content changes with purchases
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const content = await prisma.content.findMany({

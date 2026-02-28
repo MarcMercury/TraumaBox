@@ -5,6 +5,19 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getSessionUser } from "@/lib/auth";
+import { z } from "zod";
+
+const submitSchema = z.object({
+  title: z.string().min(1, "Title is required").max(200),
+  series: z.string().max(100).optional().default(""),
+  description: z.string().min(1, "Description is required").max(2000),
+  sideEffects: z.string().max(500).optional().default(""),
+  consumptionTime: z.string().max(100).optional().default(""),
+  classification: z.string().max(50).optional().default("COMMUNITY"),
+  tokenCost: z.number().int().min(10).max(1000),
+  contentBody: z.string().max(50000).optional().default(""),
+});
 
 function generateCaseFileId(): string {
   const prefix = "TB";
@@ -17,27 +30,20 @@ function generateCaseFileId(): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, series, description, sideEffects, consumptionTime, classification, tokenCost, contentBody } = body;
+    const parsed = submitSchema.safeParse(body);
 
-    // Validation — because even chaos has standards
-    if (!title || !description || !tokenCost) {
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message ?? "Invalid input";
       return NextResponse.json(
-        { error: "Missing required fields. At minimum: title, description, and token cost. We're not that demanding." },
+        { error: `Validation failed: ${firstError}. Even chaos has standards.` },
         { status: 400 }
       );
     }
 
-    if (tokenCost < 10 || tokenCost > 1000) {
-      return NextResponse.json(
-        { error: "Token cost must be between 10 and 1000. We said you could charge whatever you want, but within reason." },
-        { status: 400 }
-      );
-    }
+    const { title, series, description, sideEffects, consumptionTime, classification, tokenCost, contentBody } = parsed.data;
 
     // Get or create the demo user as contributor (in production: check session)
-    let user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    let user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json(

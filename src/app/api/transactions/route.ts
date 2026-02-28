@@ -2,18 +2,16 @@
 // Returns the user's transaction history (the audit trail)
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { getTransactionHistory } from "@/lib/tokens";
+import { getSessionUser } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") ?? "50", 10);
 
-    // Get demo user
-    const user = await prisma.user.findUnique({
-      where: { email: "subject@trauma.box" },
-    });
+    // Get current user
+    const user = await getSessionUser();
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });

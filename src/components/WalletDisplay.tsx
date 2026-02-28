@@ -19,10 +19,15 @@ export default function WalletDisplay({ onShopClick }: { onShopClick?: () => voi
 
     if (displayBalance === target) return;
 
-    setIsAnimating(true);
     const diff = target - displayBalance;
     const step = Math.ceil(Math.abs(diff) / 15);
     const direction = diff > 0 ? 1 : -1;
+
+    // Defer state updates to avoid synchronous setState in effect
+    const animStart = setTimeout(() => {
+      setIsAnimating(true);
+      setGlitchText(true);
+    }, 0);
 
     const interval = setInterval(() => {
       setDisplayBalance((prev) => {
@@ -36,11 +41,10 @@ export default function WalletDisplay({ onShopClick }: { onShopClick?: () => voi
       });
     }, 30);
 
-    // Trigger glitch on change
-    setGlitchText(true);
     const gt = setTimeout(() => setGlitchText(false), 600);
 
     return () => {
+      clearTimeout(animStart);
       clearInterval(interval);
       clearTimeout(gt);
     };

@@ -27,6 +27,8 @@ export default function FeedLayout({
   const [uptime, setUptime] = useState(0);
   const [cookieBanner, setCookieBanner] = useState(true);
   const [shopOpen, setShopOpen] = useState(false);
+  const [pid] = useState(() => Math.floor(Math.random() * 9999));
+  const [memUsage, setMemUsage] = useState(() => (Math.random() * 40 + 60).toFixed(1));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,6 +42,7 @@ export default function FeedLayout({
         })
       );
       setUptime((prev) => prev + 1);
+      setMemUsage((Math.random() * 40 + 60).toFixed(1));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -64,13 +67,13 @@ export default function FeedLayout({
         <div className="flex items-center justify-between px-4 py-1 border-b border-[#1a1a1a] text-[10px] font-mono text-[#444]">
           <div className="flex items-center gap-4">
             <span>SYS://TRAUMA_BOX_TERMINAL</span>
-            <span>PID: {Math.floor(Math.random() * 9999)}</span>
+            <span>PID: {pid}</span>
             <span>
               UPTIME: {Math.floor(uptime / 60)}m {uptime % 60}s
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span>MEM: {(Math.random() * 40 + 60).toFixed(1)}%</span>
+            <span>MEM: {memUsage}%</span>
             <span>
               THREAT: <span className="text-red-500">ELEVATED</span>
             </span>
