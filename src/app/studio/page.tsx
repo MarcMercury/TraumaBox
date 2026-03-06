@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 interface CreatorStats {
@@ -38,14 +38,39 @@ interface StudioData {
 export default function StudioDashboard() {
   const [data, setData] = useState<StudioData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
+    setLoading(true);
     fetch("/api/studio/stats")
       .then((r) => r.json())
       .then(setData)
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleAction = async (contentId: string, action: "publish" | "redact") => {
+    setActionLoading(contentId);
+    try {
+      const res = await fetch("/api/studio/content", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contentId, action }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        fetchData();
+      }
+    } catch {
+      // silent
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -206,6 +231,24 @@ export default function StudioDashboard() {
                         <div className="text-[#555]">EARNED</div>
                         <div className="text-[var(--terminal-green)]">{item.totalRevenue} TKN</div>
                       </div>
+                      {item.status === "PENDING" && (
+                        <button
+                          onClick={() => handleAction(item.id, "publish")}
+                          disabled={actionLoading === item.id}
+                          className="px-3 py-1.5 border border-[var(--terminal-green)] text-[var(--terminal-green)] text-[10px] hover:bg-[var(--terminal-green)] hover:text-black transition-all disabled:opacity-50"
+                        >
+                          {actionLoading === item.id ? "..." : "PUBLISH"}
+                        </button>
+                      )}
+                      {(item.status === "LEAKED" || item.status === "OPENED") && (
+                        <button
+                          onClick={() => handleAction(item.id, "redact")}
+                          disabled={actionLoading === item.id}
+                          className="px-3 py-1.5 border border-[#555] text-[#555] text-[10px] hover:border-[var(--danger)] hover:text-[var(--danger)] transition-all disabled:opacity-50"
+                        >
+                          {actionLoading === item.id ? "..." : "REDACT"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -67,6 +67,7 @@ export default function WalletDisplay({ onShopClick }: { onShopClick?: () => voi
       onClick={onShopClick}
       className="wallet-display group"
       title="Click to open Token Shop"
+      aria-label={`Token balance: ${user.tokenBalance} tokens ($${(user.tokenBalance * 0.01).toFixed(2)}). Click to open shop.`}
     >
       <div className="flex items-center gap-2">
         {/* Token icon */}

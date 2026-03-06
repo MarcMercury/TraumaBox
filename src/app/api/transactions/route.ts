@@ -3,19 +3,16 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getTransactionHistory } from "@/lib/tokens";
-import { getSessionUser } from "@/lib/auth";
+import { requireAuth } from "@/lib/apiHelpers";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") ?? "50", 10);
+    const rawLimit = parseInt(searchParams.get("limit") ?? "50", 10);
+    const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(rawLimit, 200)) : 50;
 
-    // Get current user
-    const user = await getSessionUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 401 });
-    }
+    const [user, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
 
     const transactions = await getTransactionHistory(user.id, limit);
 

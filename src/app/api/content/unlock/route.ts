@@ -4,28 +4,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { unlockContent } from "@/lib/tokens";
-import { getSessionUser } from "@/lib/auth";
+import { requireAuth } from "@/lib/apiHelpers";
+import { z } from "zod";
+
+const unlockSchema = z.object({
+  caseFileId: z.string().min(1).max(50),
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const { caseFileId } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const parsed = unlockSchema.safeParse(body);
 
-    if (!caseFileId) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Missing caseFileId. What are you trying to unlock, air?" },
+        { error: "Missing or invalid caseFileId." },
         { status: 400 }
       );
     }
 
-    // Get the current user (demo user for now)
-    const user = await getSessionUser();
+    const { caseFileId } = parsed.data;
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found. Perhaps you don't exist." },
-        { status: 401 }
-      );
-    }
+    const [user, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
 
     // Resolve caseFileId to actual content ID
     const content = await prisma.content.findUnique({

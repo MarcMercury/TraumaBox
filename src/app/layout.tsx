@@ -20,6 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="scanlines vcr-grain">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-[200] focus:top-2 focus:left-2 focus:bg-[var(--accent)] focus:text-black focus:px-4 focus:py-2 focus:font-mono focus:text-sm"
+        >
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>

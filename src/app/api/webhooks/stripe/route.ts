@@ -1,10 +1,12 @@
 // ─── POST /api/webhooks/stripe ──────────────────────
 // Stripe sends a webhook when payment completes.
 // This credits tokens to the user's account.
+// Idempotency: checks for duplicate session IDs to prevent double-credits.
 
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, TOKEN_PACKS } from "@/lib/stripe";
 import { creditTokens } from "@/lib/tokens";
+import { prisma } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -42,6 +44,20 @@ export async function POST(request: NextRequest) {
 
     const pack = TOKEN_PACKS.find((p) => p.id === packId);
     const tokens = parseInt(tokenAmount, 10);
+
+    if (!Number.isFinite(tokens) || tokens <= 0) {
+      console.error("[STRIPE WEBHOOK] Invalid token amount in metadata:", tokenAmount);
+      return NextResponse.json({ error: "Invalid token amount" }, { status: 400 });
+    }
+
+    // Idempotency: check if this session was already processed
+    const existing = await prisma.transaction.findFirst({
+      where: { reference: session.id, type: "PURCHASE" },
+    });
+    if (existing) {
+      console.log(`[STRIPE WEBHOOK] Duplicate event for session ${session.id} — skipping`);
+      return NextResponse.json({ received: true, duplicate: true });
+    }
 
     try {
       await creditTokens(

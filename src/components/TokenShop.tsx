@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTokens } from "./TokenProvider";
 
 const TOKEN_PACKS = [
@@ -45,6 +45,42 @@ export default function TokenShop({ isOpen, onClose }: TokenShopProps) {
   const { user, devCredit } = useTokens();
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [devAmount, setDevAmount] = useState("1000");
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Focus trap and Escape key handler
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      // Focus the close button when modal opens
+      requestAnimationFrame(() => closeButtonRef.current?.focus());
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, handleKeyDown]);
 
   if (!isOpen) return null;
 
@@ -77,15 +113,24 @@ export default function TokenShop({ isOpen, onClose }: TokenShopProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Token acquisition shop"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl mx-4 border border-[#333] bg-[#0a0a0a] max-h-[90vh] overflow-y-auto">
+      <div
+        ref={modalRef}
+        className="relative z-10 w-full max-w-2xl mx-4 border border-[#333] bg-[#0a0a0a] max-h-[90vh] overflow-y-auto"
+      >
         {/* Header */}
         <div className="border-b border-[#222] p-4 flex items-center justify-between">
           <div>
@@ -97,7 +142,9 @@ export default function TokenShop({ isOpen, onClose }: TokenShopProps) {
             </p>
           </div>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
+            aria-label="Close token shop"
             className="font-mono text-lg text-[#555] hover:text-red-500 transition-colors px-2"
           >
             ✕
@@ -158,6 +205,7 @@ export default function TokenShop({ isOpen, onClose }: TokenShopProps) {
                 <button
                   onClick={() => handlePurchase(pack.id)}
                   disabled={purchasing !== null}
+                  aria-label={`Purchase ${pack.name} for ${pack.price}`}
                   className={`px-6 py-3 font-mono text-sm font-bold border transition-all ${
                     purchasing === pack.id
                       ? "border-[#555] text-[#555] animate-pulse"
@@ -185,6 +233,7 @@ export default function TokenShop({ isOpen, onClose }: TokenShopProps) {
                 type="number"
                 value={devAmount}
                 onChange={(e) => setDevAmount(e.target.value)}
+                aria-label="Number of tokens to inject"
                 className="bg-black border border-[#333] px-3 py-2 font-mono text-xs text-[var(--terminal-green)] focus:border-[var(--terminal-green)] focus:outline-none w-32"
                 min={1}
                 max={99999}

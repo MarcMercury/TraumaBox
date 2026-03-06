@@ -1,19 +1,24 @@
 // ─── POST /api/tokens/dev-credit ────────────────────
 // DEV ONLY: Instantly credit tokens without Stripe
-// Remove this in production!
+// Gated by NODE_ENV — returns 403 in production.
 
 import { NextRequest, NextResponse } from "next/server";
 import { creditTokens } from "@/lib/tokens";
 import { getSessionUser } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
-  if (process.env.NODE_ENV === "production") {
+  // Block in production and Vercel preview deployments
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.VERCEL_ENV === "production"
+  ) {
     return NextResponse.json({ error: "Nice try." }, { status: 403 });
   }
 
   try {
-    const { amount } = await request.json();
-    const tokens = Math.min(Math.max(parseInt(amount, 10) || 100, 1), 99999);
+    const body = await request.json().catch(() => ({}));
+    const { amount } = body as { amount?: string };
+    const tokens = Math.min(Math.max(parseInt(amount as string, 10) || 100, 1), 99999);
 
     const user = await getSessionUser();
 

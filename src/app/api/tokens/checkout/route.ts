@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, TOKEN_PACKS } from "@/lib/stripe";
-import { getSessionUser } from "@/lib/auth";
+import { requireAuth } from "@/lib/apiHelpers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,12 +17,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get current user
-    const user = await getSessionUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 401 });
-    }
+    const [user, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
 
     // Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({

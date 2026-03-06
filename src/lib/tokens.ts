@@ -37,6 +37,7 @@ export async function getBalance(userId: string): Promise<number> {
 
 /**
  * Credit tokens to a user (from Stripe purchase, bonus, etc.)
+ * Amount is validated server-side — rejects non-positive values.
  */
 export async function creditTokens(
   userId: string,
@@ -44,18 +45,24 @@ export async function creditTokens(
   detail: string,
   reference?: string
 ): Promise<{ balance: number }> {
+  // Security: reject non-positive amounts to prevent balance manipulation
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error("INVALID_AMOUNT: Token credit must be a positive number");
+  }
+  const safeAmount = Math.floor(amount); // Ensure integer
+
   const result = await prisma.$transaction(async (tx: TxClient) => {
     // Credit the balance
     const user = await tx.user.update({
       where: { id: userId },
-      data: { tokenBalance: { increment: amount } },
+      data: { tokenBalance: { increment: safeAmount } },
     });
 
     // Log the transaction
     await tx.transaction.create({
       data: {
         userId,
-        amount: +amount,
+        amount: +safeAmount,
         type: "PURCHASE",
         detail,
         reference,
@@ -193,10 +200,12 @@ export async function unlockContent(
  * Get a user's complete transaction history
  */
 export async function getTransactionHistory(userId: string, limit = 50) {
+  // Clamp limit to prevent unreasonable queries
+  const safeLimit = Math.max(1, Math.min(limit, 200));
   return prisma.transaction.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    take: limit,
+    take: safeLimit,
   });
 }
 

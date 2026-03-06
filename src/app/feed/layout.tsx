@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { TokenProvider } from "@/components/TokenProvider";
 import WalletDisplay from "@/components/WalletDisplay";
 import TokenShop from "@/components/TokenShop";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const NAV_ITEMS = [
   { href: "/feed", label: "FEED", icon: "◉" },
@@ -61,8 +62,16 @@ export default function FeedLayout({
   return (
     <TokenProvider>
     <div className="min-h-screen bg-black grid-bg">
+      {/* Skip to content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-[200] focus:top-2 focus:left-2 focus:bg-[var(--accent)] focus:text-black focus:px-4 focus:py-2 focus:font-mono focus:text-sm"
+      >
+        Skip to main content
+      </a>
+
       {/* Top Control Panel */}
-      <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-[#222]">
+      <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-[#222]" role="banner">
         {/* System bar */}
         <div className="flex items-center justify-between px-4 py-1 border-b border-[#1a1a1a] text-[10px] font-mono text-[#444]">
           <div className="flex items-center gap-4">
@@ -88,7 +97,7 @@ export default function FeedLayout({
         </div>
 
         {/* Main nav */}
-        <nav className="flex items-center justify-between px-4 py-2">
+        <nav className="flex items-center justify-between px-4 py-2" aria-label="Main navigation">
           <Link href="/" className="flex items-center gap-2 group">
             <span className="text-[var(--accent)] font-bold text-lg font-sans tracking-wider glitch-text" data-text="TRAUMA BOX">
               TRAUMA BOX
@@ -109,7 +118,7 @@ export default function FeedLayout({
               </Link>
             ))}
 
-            <button onClick={handlePanic} className="panic-btn ml-4 text-xs">
+            <button onClick={handlePanic} className="panic-btn ml-4 text-xs" aria-label="Trigger panic screen (cosmetic)">
               ⚠ PANIC
             </button>
           </div>
@@ -117,10 +126,12 @@ export default function FeedLayout({
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">{children}</main>
+      <main id="main-content" className="max-w-7xl mx-auto px-4 py-8" role="main">
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#1a1a1a] mt-16 py-6 px-4">
+      <footer className="border-t border-[#1a1a1a] mt-16 py-6 px-4" role="contentinfo">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] text-[#444]">
           <div>&copy; TRAUMA BOX INDUSTRIES — ALL WRONGS RESERVED</div>
           <div className="flex items-center gap-4">

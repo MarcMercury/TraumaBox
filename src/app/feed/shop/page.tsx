@@ -1,55 +1,13 @@
 "use client";
 
-const PRODUCTS = [
-  {
-    id: "TK-001",
-    name: "Trauma Box Starter Kit",
-    price: "$29.99",
-    status: "IN STOCK",
-    description: "Everything you need to begin your journey into emotional damage. Includes one (1) copy of our flagship story and a complimentary existential crisis.",
-    sideEffects: "Buyer's remorse, strange sense of satisfaction",
-  },
-  {
-    id: "TK-002",
-    name: "ATCS: Complete Collection (Print)",
-    price: "$49.99",
-    status: "PRE-ORDER",
-    description: "All Absolutely Terrible Children's Stories in one beautifully bound volume. Makes a terrible gift for baby showers.",
-    sideEffects: "Awkward silences at family gatherings",
-  },
-  {
-    id: "TK-003",
-    name: "Trauma Box T-Shirt",
-    price: "$24.99",
-    status: "IN STOCK",
-    description: "Wear your emotional damage on the outside for once. 100% cotton. 0% appropriate for parent-teacher conferences.",
-    sideEffects: "Unsolicited conversations with strangers",
-  },
-  {
-    id: "TK-004",
-    name: "Trauma Mug: 'This Is Fine'",
-    price: "$16.99",
-    status: "IN STOCK",
-    description: "For your morning coffee or evening tears. Microwave safe. Emotionally unsafe.",
-    sideEffects: "Colleagues asking if you're okay",
-  },
-  {
-    id: "TK-005",
-    name: "Panic Button (Physical)",
-    price: "$12.99",
-    status: "SOLD OUT",
-    description: "A real, physical panic button for your desk. Press it. Nothing happens. Just like real life.",
-    sideEffects: "Temporary illusion of control",
-  },
-  {
-    id: "TK-006",
-    name: "Redacted Sticker Pack",
-    price: "$8.99",
-    status: "IN STOCK",
-    description: "50 black bar stickers to redact anything in your life you'd rather not deal with. Laptop, fridge, marriage certificate — the possibilities are endless.",
-    sideEffects: "Mild vandalism, plausible deniability",
-  },
-];
+const PRODUCTS: {
+  id: string;
+  name: string;
+  price: string;
+  status: string;
+  description: string;
+  sideEffects: string;
+}[] = [];
 
 export default function ShopPage() {
   return (
@@ -67,6 +25,17 @@ export default function ShopPage() {
         ALL SALES: FINAL. ALL REFUNDS: DENIED. ALL COMPLAINTS: IGNORED.
       </p>
 
+      {PRODUCTS.length === 0 ? (
+        <div className="text-center py-16 border border-[#222] bg-[#0d0d0d]">
+          <div className="text-4xl mb-4 opacity-20">☢</div>
+          <p className="font-mono text-sm text-[#555]">
+            INVENTORY EMPTY — SUPPLY CHAIN COMPROMISED
+          </p>
+          <p className="font-mono text-[10px] text-[#444] mt-2">
+            Physical goods are being manufactured. Check back later.
+          </p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {PRODUCTS.map((product) => (
           <div key={product.id} className="case-file p-4 glitch-hover flex flex-col">
@@ -130,6 +99,7 @@ export default function ShopPage() {
           </div>
         ))}
       </div>
+      )}
 
       <div className="mt-8 border border-[#222] bg-[#0d0d0d] p-4 font-mono text-[10px] text-[#555]">
         <p>

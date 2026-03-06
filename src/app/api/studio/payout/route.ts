@@ -6,19 +6,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requestPayout } from "@/lib/tokens";
-import { getSessionUser } from "@/lib/auth";
+import { requireAuth } from "@/lib/apiHelpers";
 
 export async function POST() {
   try {
-    // Demo user (production: parse session)
-    const user = await getSessionUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "Can't pay someone who doesn't exist." },
-        { status: 401 }
-      );
-    }
+    const [user, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
 
     const result = await requestPayout(user.id);
 
@@ -47,11 +40,8 @@ export async function POST() {
 // Get payout history
 export async function GET() {
   try {
-    const user = await getSessionUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Ghost mode." }, { status: 401 });
-    }
+    const [user, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
 
     const payouts = await prisma.payout.findMany({
       where: { userId: user.id },

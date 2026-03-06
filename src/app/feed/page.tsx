@@ -218,23 +218,12 @@ export default function FeedPage() {
 
             {/* Action button — token-gated */}
             {hasUnlocked(file.caseFileId) ? (
-              file.filePath ? (
-                <a
-                  href={file.filePath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full mt-4 py-2 font-mono text-xs tracking-wider border text-center transition-all border-[var(--terminal-green)] text-[var(--terminal-green)] hover:bg-[var(--terminal-green)] hover:text-black"
-                >
-                  ◉ ACCESS GRANTED — OPEN CASE FILE →
-                </a>
-              ) : (
-                <button
-                  className="w-full mt-4 py-2 font-mono text-xs tracking-wider border border-[var(--terminal-green)] text-[var(--terminal-green)] cursor-default"
-                  disabled
-                >
-                  ◉ UNLOCKED — CONTENT PENDING UPLOAD
-                </button>
-              )
+              <Link
+                href={`/feed/content/${encodeURIComponent(file.caseFileId)}`}
+                className="block w-full mt-4 py-2 font-mono text-xs tracking-wider border text-center transition-all border-[var(--terminal-green)] text-[var(--terminal-green)] hover:bg-[var(--terminal-green)] hover:text-black"
+              >
+                ◉ ACCESS GRANTED — VIEW CASE FILE →
+              </Link>
             ) : file.status === "REDACTED" ? (
               <button
                 className="w-full mt-4 py-2 font-mono text-xs tracking-wider border border-[#333] text-[#444] cursor-not-allowed"

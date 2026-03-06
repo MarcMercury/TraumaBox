@@ -3,19 +3,12 @@
 
 import { NextResponse } from "next/server";
 import { getCreatorStats, getCreatorRevenue } from "@/lib/tokens";
-import { getSessionUser } from "@/lib/auth";
+import { requireAuth } from "@/lib/apiHelpers";
 
 export async function GET() {
   try {
-    // Demo user (production: parse session)
-    const user = await getSessionUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found. Hard to track earnings for a ghost." },
-        { status: 401 }
-      );
-    }
+    const [user, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
 
     if (user.role !== "CONTRIBUTOR" && user.role !== "ADMIN") {
       return NextResponse.json({

@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth";
+import { requireAuth } from "@/lib/apiHelpers";
 import { z } from "zod";
 
 const submitSchema = z.object({
@@ -43,14 +43,9 @@ export async function POST(request: NextRequest) {
     const { title, series, description, sideEffects, consumptionTime, classification, tokenCost, contentBody } = parsed.data;
 
     // Get or create the demo user as contributor (in production: check session)
-    let user = await getSessionUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "You need to exist before you can contribute. Philosophical requirements." },
-        { status: 401 }
-      );
-    }
+    const [authUser, errorResponse] = await requireAuth();
+    if (errorResponse) return errorResponse;
+    let user = authUser;
 
     // Upgrade to CONTRIBUTOR if they're just a READER
     if (user.role === "READER") {

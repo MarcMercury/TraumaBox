@@ -1,22 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const ARCHIVE_DATA = [
-  { id: "ATCS-001", title: "The Hindenburg: A Hot Air Balloon Story", date: "2025-03-15", type: "STORY", status: "LEAKED", views: 4281, danger: "HIGH" },
-  { id: "ATCS-002", title: "Pompeii: A Nature Walk Gone Wrong", date: "2025-04-02", type: "STORY", status: "OPENED", views: 3892, danger: "EXTREME" },
-  { id: "ATCS-003", title: "The Titanic: A Boat Ride Adventure", date: "2025-05-18", type: "STORY", status: "LEAKED", views: 5629, danger: "HIGH" },
-  { id: "ATCS-004", title: "Chernobyl: A Glowing Bedtime Story", date: "2025-06-01", type: "STORY", status: "REDACTED", views: 0, danger: "NUCLEAR" },
-  { id: "ATCS-005", title: "The Donner Party: A Camping Cookbook", date: "2025-07-12", type: "STORY", status: "LEAKED", views: 3104, danger: "GASTRONOMIC" },
-  { id: "TB-GAME-001", title: "Trauma Bingo", date: "2025-08-20", type: "GAME", status: "OPENED", views: 1847, danger: "MODERATE" },
-  { id: "TB-VID-001", title: "Behind the Trauma: Making Of", date: "2025-09-03", type: "VIDEO", status: "OPENED", views: 921, danger: "LOW" },
-  { id: "ATCS-006", title: "The Plague: A Counting Book", date: "2025-10-31", type: "STORY", status: "LEAKED", views: 2764, danger: "BIOHAZARD" },
-];
+interface ArchiveItem {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  status: string;
+  views: number;
+  danger: string;
+}
 
 export default function ArchivesPage() {
+  const [items, setItems] = useState<ArchiveItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<string>("date");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.content) {
+          setItems(
+            data.content.map((c: { caseFileId: string; title: string; createdAt: string; classification: string; status: string; totalUnlocks: number }) => ({
+              id: c.caseFileId,
+              title: c.title,
+              date: c.createdAt.slice(0, 10),
+              type: c.classification,
+              status: c.status,
+              views: c.totalUnlocks,
+              danger: c.classification,
+            }))
+          );
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleSort = (col: string) => {
     if (sortBy === col) {
@@ -27,7 +50,7 @@ export default function ArchivesPage() {
     }
   };
 
-  const filtered = ARCHIVE_DATA.filter(
+  const filtered = items.filter(
     (item) =>
       item.title.toLowerCase().includes(search.toLowerCase()) ||
       item.id.toLowerCase().includes(search.toLowerCase())
@@ -38,6 +61,16 @@ export default function ArchivesPage() {
     if (sortBy === "title") return modifier * a.title.localeCompare(b.title);
     return 0;
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="font-mono text-sm text-[#555] animate-pulse">
+          LOADING ARCHIVE DATABASE...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
