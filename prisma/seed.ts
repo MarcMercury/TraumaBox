@@ -97,6 +97,7 @@ const CONTENT_SEED = [
     description: "Natural disaster meets nuclear power. Earthquake, tsunami, reactor failure — layered but narratively clean. Three disasters in one terrible package.",
     sideEffects: "Radiophobia, distrust of power plants",
     consumptionTime: "5 minutes of compounding anxiety",
+    filePath: "/ATCS/Surfing%20again.png",
   },
   {
     caseFileId: "ATCS-008",
@@ -120,6 +121,7 @@ const CONTENT_SEED = [
     description: "The power of weapons. A serious moral lesson about war and responsibility. Much heavier tone. The world changed in a flash — literally.",
     sideEffects: "Existential dread, pacifist tendencies",
     consumptionTime: "6 minutes of heavy silence",
+    filePath: "/ATCS/Hiroshima.png",
   },
   {
     caseFileId: "ATCS-010",
@@ -143,6 +145,7 @@ const CONTENT_SEED = [
     description: "Environmental disaster — visual wildlife impact, corporate responsibility, and cleanup efforts. The ocean asked for nothing and got the worst of us.",
     sideEffects: "Eco-anxiety, distrust of oil companies",
     consumptionTime: "5 minutes of oily dread",
+    filePath: "/ATCS/Deepwater%20dig%20a%20hole.png",
   },
   {
     caseFileId: "ATCS-012",
@@ -153,6 +156,7 @@ const CONTENT_SEED = [
     classification: "CATASTROPHIC",
     description: "Government response and inequality collide. A natural disaster that exposed human systems failure. The storm was only the beginning.",
     sideEffects: "Weather anxiety, distrust of authority",
+    filePath: "/ATCS/Katrina.png",
     consumptionTime: "5 minutes of rising water",
   },
   {
