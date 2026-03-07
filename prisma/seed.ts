@@ -180,6 +180,7 @@ const CONTENT_SEED = [
     description: "Environmental damage reversed. The world actually cooperated and fixed it. A rare story that ends positively — proof that humans can occasionally get it right.",
     sideEffects: "Cautious optimism, sunscreen awareness",
     consumptionTime: "5 minutes ending with hope",
+    filePath: "/ATCS/Ozone%20(2).png",
   },
   {
     caseFileId: "ATCS-015",
