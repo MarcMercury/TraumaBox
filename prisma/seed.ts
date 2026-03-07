@@ -73,6 +73,7 @@ const CONTENT_SEED = [
     description: "A sudden natural disaster teaches about earthquakes, ocean waves, and the importance of warning systems. The ocean doesn't send invitations.",
     sideEffects: "Thalassophobia, heightened wave awareness",
     consumptionTime: "5 minutes of rising dread",
+    filePath: "/ATCS/Tsunami%201.png",
   },
   {
     caseFileId: "ATCS-006",
@@ -84,6 +85,7 @@ const CONTENT_SEED = [
     description: "Corporate negligence meets invisible danger. An industrial accident that teaches the heavy responsibility companies carry — and what happens when they drop it.",
     sideEffects: "Distrust of factories, air quality anxiety",
     consumptionTime: "5 minutes of breath-holding",
+    filePath: "/ATCS/Bohpal.png",
   },
   {
     caseFileId: "ATCS-007",
@@ -106,6 +108,7 @@ const CONTENT_SEED = [
     description: "Urban planning and rebuilding. A clear event, a clear aftermath, and a strong rebuilding arc. Sometimes you need to burn it all down to build it better.",
     sideEffects: "Pyrophobia, sudden interest in architecture",
     consumptionTime: "5 minutes of smoldering",
+    filePath: "/ATCS/London%20Fire.png",
   },
   {
     caseFileId: "ATCS-009",
