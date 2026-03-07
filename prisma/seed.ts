@@ -184,7 +184,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-015",
-    title: "Chernobyl: A Glowing Bedtime Story",
+    title: "The Happy Reactor",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
