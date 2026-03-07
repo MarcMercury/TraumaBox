@@ -60,6 +60,7 @@ export async function GET(
       sideEffects: content.sideEffects,
       consumptionTime: content.consumptionTime,
       filePath: content.filePath,
+      thumbnailPath: content.thumbnailPath,
       creatorName: content.creator?.displayName ?? "TRAUMA BOX",
       creatorId: content.creatorId,
       totalUnlocks: content._count.unlockedBy,

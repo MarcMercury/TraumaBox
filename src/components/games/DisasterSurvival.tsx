@@ -53,14 +53,80 @@ const QUESTIONS: Question[] = [
       { label: "Barricade with IKEA furniture", points: 8 },
     ],
   },
+  {
+    scenario: "The sun has not risen for 72 hours. You:",
+    options: [
+      { label: "Assume it's just Monday", points: 3 },
+      { label: "Check if someone unplugged the sun", points: 2 },
+      { label: "Start worshipping the nearest lamp", points: 6 },
+      { label: "Stockpile vitamin D and become a mole person", points: 11 },
+    ],
+  },
+  {
+    scenario: "All animals suddenly gain the ability to speak. You:",
+    options: [
+      { label: "Apologize to every burger you've ever eaten", points: 4 },
+      { label: "Form a political alliance with the crows", points: 9 },
+      { label: "Negotiate a peace treaty with your cat (it declines)", points: 5 },
+      { label: "Immediately lawyer up — your dog knows too much", points: 7 },
+    ],
+  },
+  {
+    scenario: "A supervolcano erupts. Global temperatures drop 20°F. You:",
+    options: [
+      { label: "Finally wear all the jackets you impulse-bought", points: 6 },
+      { label: "Move into a Costco and declare sovereignty", points: 13 },
+      { label: "Burn your student loan documents for warmth", points: 8 },
+      { label: "Become a warlord of the local Trader Joe's", points: 3 },
+    ],
+  },
+  {
+    scenario: "AI has taken over all military systems. You:",
+    options: [
+      { label: "Ask it politely to stop", points: 2 },
+      { label: "Unplug your router and hope for the best", points: 5 },
+      { label: "Befriend the AI by complimenting its code", points: 7 },
+      { label: "Accept your new robot overlord and apply for middle management", points: 10 },
+    ],
+  },
+  {
+    scenario: "Gravity reverses for 10 minutes. You:",
+    options: [
+      { label: "Grab onto the toilet and pray", points: 8 },
+      { label: "Finally achieve your dream of flight (briefly)", points: 4 },
+      { label: "Film it vertically like a psychopath", points: 1 },
+      { label: "Use the time to organize your ceiling", points: 6 },
+    ],
+  },
+  {
+    scenario: "The ocean starts rising 1 foot per hour. You:",
+    options: [
+      { label: "Buy a boat on Amazon Prime (2-day shipping, obviously)", points: 5 },
+      { label: "Move to Denver and pretend everything is fine", points: 9 },
+      { label: "Start a beachfront property fire sale grift", points: 2 },
+      { label: "Evolve gills through sheer willpower", points: 3 },
+    ],
+  },
+  {
+    scenario: "A portal to another dimension opens in your kitchen. You:",
+    options: [
+      { label: "Throw your roommate in first to test it", points: 3 },
+      { label: "Charge admission", points: 7 },
+      { label: "Call your landlord (this definitely violates the lease)", points: 5 },
+      { label: "Jump in — anywhere is better than here", points: 11 },
+    ],
+  },
 ];
 
 const SURVIVAL_RESULTS = [
-  { max: 10, time: "47 seconds", verdict: "You are the disaster." },
-  { max: 18, time: "17 minutes", verdict: "You made it slightly longer than the average house cat." },
-  { max: 28, time: "3 hours", verdict: "Enough time to regret every life choice." },
-  { max: 40, time: "2 days", verdict: "Impressive. You found a Costco." },
-  { max: 100, time: "Somehow indefinitely", verdict: "Either very lucky or very boring." },
+  { max: 15, time: "47 seconds", verdict: "You are the disaster." },
+  { max: 30, time: "17 minutes", verdict: "You made it slightly longer than the average house cat." },
+  { max: 45, time: "3 hours", verdict: "Enough time to regret every life choice." },
+  { max: 60, time: "2 days", verdict: "Impressive. You found a Costco." },
+  { max: 80, time: "3 weeks", verdict: "You've gone feral but you're alive. Barely." },
+  { max: 100, time: "6 months", verdict: "You've started a small feudal society in a Walmart. You are feared." },
+  { max: 130, time: "Somehow indefinitely", verdict: "Either very lucky, very boring, or the cockroach of people." },
+  { max: 999, time: "You outlive the sun", verdict: "You are clearly not human. Report to Area 51 for debriefing." },
 ];
 
 export default function DisasterSurvival() {

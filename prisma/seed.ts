@@ -181,7 +181,8 @@ const CONTENT_SEED = [
     description: "The worst nuclear disaster in history, told through a child's eyes. Invisible danger, abandoned cities, and lessons about the atoms we split but couldn't control.",
     sideEffects: "Radiophobia, Geiger counter obsession",
     consumptionTime: "8 minutes of glowing dread",
-    filePath: "/ATCS/Chernobyl.png",
+    filePath: "/ATCS/ATCS%20Chernobyl.pdf",
+    thumbnailPath: "/ATCS/Chernobyl.png",
   },
   {
     caseFileId: "ATCS-016",
@@ -218,6 +219,18 @@ const CONTENT_SEED = [
     sideEffects: "Permanent distrust of shortcuts, loss of appetite",
     consumptionTime: "5 minutes of mounting hunger",
     filePath: "/ATCS/Donner.png",
+  },
+  {
+    caseFileId: "ATCS-019",
+    title: "My Overseas Internship",
+    series: "Absolutely Terrible Children's Stories",
+    tokenCost: 50,
+    status: "OPENED",
+    classification: "CATASTROPHIC",
+    description: "Millions of people were offered an exciting unpaid internship across the ocean with no return ticket, no HR department, and a very strict dress code involving chains.",
+    sideEffects: "Righteous fury, permanent suspicion of 'job opportunities'",
+    consumptionTime: "6 minutes of historical reckoning",
+    filePath: "/ATCS/slave%20trade.png",
   },
 ];
 

@@ -17,6 +17,7 @@ interface ContentDetail {
   sideEffects: string;
   consumptionTime: string;
   filePath: string | null;
+  thumbnailPath: string | null;
   creatorName: string;
   creatorId: string | null;
   totalUnlocks: number;
@@ -167,6 +168,29 @@ export default function ContentViewerPage() {
               <div className="font-mono text-sm text-[#ccc] leading-relaxed whitespace-pre-wrap">
                 {content.body}
               </div>
+            ) : content.filePath && !/\.(png|jpg|jpeg|webp)$/i.test(content.filePath) ? (
+              <div className="space-y-6">
+                {content.thumbnailPath && (
+                  <img
+                    src={content.thumbnailPath}
+                    alt={content.title}
+                    className="w-full border border-[#222]"
+                  />
+                )}
+                <div className="text-center py-4">
+                  <a
+                    href={content.filePath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 border border-[var(--terminal-green)] text-[var(--terminal-green)] font-mono text-sm hover:bg-[var(--terminal-green)] hover:text-black transition-all inline-block"
+                  >
+                    ◉ OPEN FULL CASE FILE →
+                  </a>
+                  <div className="font-mono text-[10px] text-[#555] mt-3">
+                    DECLASSIFIED DOCUMENT — TAP TO READ
+                  </div>
+                </div>
+              </div>
             ) : content.filePath && /\.(png|jpg|jpeg|webp)$/i.test(content.filePath) ? (
               <div className="space-y-4">
                 <img
@@ -174,17 +198,6 @@ export default function ContentViewerPage() {
                   alt={content.title}
                   className="w-full border border-[#222]"
                 />
-              </div>
-            ) : content.filePath ? (
-              <div className="text-center py-8">
-                <a
-                  href={content.filePath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 border border-[var(--terminal-green)] text-[var(--terminal-green)] font-mono text-sm hover:bg-[var(--terminal-green)] hover:text-black transition-all"
-                >
-                  ◉ OPEN CASE FILE →
-                </a>
               </div>
             ) : (
               <div className="text-center py-8 font-mono text-sm text-[#555]">

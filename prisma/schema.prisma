@@ -49,6 +49,7 @@ model Content {
   consumptionTime String   @default("")
   body            String   @default("")      // Markdown content body
   filePath        String?                    // Optional file/media attachment
+  thumbnailPath   String?                    // Optional tile image (falls back to filePath)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

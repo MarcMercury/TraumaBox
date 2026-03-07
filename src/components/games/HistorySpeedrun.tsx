@@ -53,6 +53,69 @@ const DECISIONS: Decision[] = [
       { label: "Build the world's largest vanity monument", years: 50 },
     ],
   },
+  {
+    prompt: "A neighboring nation insults you on social media. You:",
+    options: [
+      { label: "Declare war via tweet at 3am", years: 2 },
+      { label: "Impose sanctions on their meme economy", years: 18 },
+      { label: "Challenge their leader to trial by combat on pay-per-view", years: 10 },
+      { label: "Release their leader's search history", years: 7 },
+    ],
+  },
+  {
+    prompt: "A plague is sweeping the land. You:",
+    options: [
+      { label: "Blame immigrants, witches, or both", years: 15 },
+      { label: "Declare the plague a hoax until it reaches the palace", years: 5 },
+      { label: "Quarantine everyone except the rich", years: 25 },
+      { label: "Advise citizens to drink bleach (historically accurate)", years: 3 },
+    ],
+  },
+  {
+    prompt: "Your advisors discover a new continent. You:",
+    options: [
+      { label: "Colonize it immediately and rename everything", years: 40 },
+      { label: "Claim the people already there don't count", years: 30 },
+      { label: "Introduce smallpox as a diplomatic gift", years: 8 },
+      { label: "Establish a trade route that somehow becomes a genocide", years: 20 },
+    ],
+  },
+  {
+    prompt: "The peasants want rights. You:",
+    options: [
+      { label: "Laugh, then increase taxes", years: 5 },
+      { label: "Give them a parliament with no actual power", years: 35 },
+      { label: "Invent nationalism to distract them", years: 60 },
+      { label: "Let them eat cake (and see what happens)", years: 2 },
+    ],
+  },
+  {
+    prompt: "You've discovered nuclear fission. Your move?",
+    options: [
+      { label: "Immediately weaponize it", years: 4 },
+      { label: "Stockpile enough to destroy the world 47 times over", years: 70 },
+      { label: "Share it with your enemies to see what happens", years: 8 },
+      { label: "Build a power plant with no safety regulations", years: 12 },
+    ],
+  },
+  {
+    prompt: "Your empire is overextended. You:",
+    options: [
+      { label: "Double down — extend further", years: 6 },
+      { label: "Split the empire in half and hope for the best", years: 45 },
+      { label: "Outsource governance to a private military contractor", years: 15 },
+      { label: "Blame the collapse on moral decay and do nothing", years: 25 },
+    ],
+  },
+  {
+    prompt: "Aliens make first contact. You:",
+    options: [
+      { label: "Shoot first, ask questions at the tribunal", years: 1 },
+      { label: "Sell them Earth's mineral rights for alien crypto", years: 10 },
+      { label: "Ask them to take over because you're tired", years: 3 },
+      { label: "Immediately try to colonize their planet", years: 8 },
+    ],
+  },
 ];
 
 export default function HistorySpeedrun() {
@@ -82,10 +145,11 @@ export default function HistorySpeedrun() {
   };
 
   const getRank = () => {
-    if (totalYears <= 30) return { rank: "SPEEDRUN CHAMPION", color: "text-[var(--terminal-green)]", desc: "Civilization collapsed during the tutorial." };
-    if (totalYears <= 70) return { rank: "EFFICIENT DESTROYER", color: "text-[var(--accent)]", desc: "Impressively fast. Most empires lasted longer." };
-    if (totalYears <= 150) return { rank: "STANDARD COLLAPSE", color: "text-yellow-500", desc: "About average for human leadership, honestly." };
-    return { rank: "SLOW DECLINE", color: "text-[#888]", desc: "You somehow delayed the inevitable. How boring." };
+    if (totalYears <= 50) return { rank: "SPEEDRUN CHAMPION", color: "text-[var(--terminal-green)]", desc: "Civilization collapsed during the tutorial. Genghis Khan would be impressed." };
+    if (totalYears <= 120) return { rank: "EFFICIENT DESTROYER", color: "text-[var(--accent)]", desc: "Impressively fast. Most empires lasted longer. You built different (worse)." };
+    if (totalYears <= 250) return { rank: "STANDARD COLLAPSE", color: "text-yellow-500", desc: "About average for human leadership, honestly. The Roman Empire is nodding." };
+    if (totalYears <= 400) return { rank: "SLOW DECLINE", color: "text-[#888]", desc: "You somehow delayed the inevitable. The British Empire took notes." };
+    return { rank: "ETERNAL SUFFERING", color: "text-red-400", desc: "You didn't destroy civilization — you made it wish it was dead. That's worse." };
   };
 
   if (finished) {

@@ -15,6 +15,7 @@ interface CaseFile {
   classification: string;
   tokenCost: number;
   filePath: string | null;
+  thumbnailPath: string | null;
   description: string;
   creatorName: string;
   creatorId: string | null;
@@ -154,10 +155,10 @@ export default function FeedPage() {
                     CONTENT REDACTED
                   </div>
                 </div>
-              ) : file.filePath && /\.(png|jpg|jpeg|webp)$/i.test(file.filePath) ? (
+              ) : (file.thumbnailPath ?? file.filePath) && /\.(png|jpg|jpeg|webp)$/i.test(file.thumbnailPath ?? file.filePath ?? "") ? (
                 <div className="relative w-full h-full">
                   <img
-                    src={file.filePath}
+                    src={file.thumbnailPath ?? file.filePath!}
                     alt={file.title}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                   />

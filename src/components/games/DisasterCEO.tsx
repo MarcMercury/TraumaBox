@@ -53,6 +53,69 @@ const DECISIONS: Decision[] = [
       "Double production — it builds immunity",
     ],
   },
+  {
+    prompt: "Your company's AI has started writing passive-aggressive resignation letters to employees.",
+    options: [
+      "Promote the AI to VP of Human Resources",
+      "Blame the training data (it was trained on Glassdoor reviews)",
+      "Let the AI fire people — it's more honest than HR",
+      "Market it as an 'empathetic offboarding solution'",
+    ],
+  },
+  {
+    prompt: "A journalist has photos of your CEO riding an endangered whale.",
+    options: [
+      "Claim the whale consented",
+      "Buy the newspaper, delete the photos, sell the newspaper",
+      "Release a statement that the CEO identifies as 'ocean-adjacent'",
+      "Counter-leak photos of the journalist jaywalking",
+    ],
+  },
+  {
+    prompt: "Your factory has been emitting an unknown gas that makes people aggressively honest.",
+    options: [
+      "Weaponize it and sell to governments",
+      "Pipe it into Congress and see what happens",
+      "Test it on the board of directors first (pure chaos)",
+      "Patent it, then suppress it — honesty is bad for business",
+    ],
+  },
+  {
+    prompt: "Your company discovered the fountain of youth but it tastes like wet pennies.",
+    options: [
+      "Add artificial sweetener and charge $10,000 per sip",
+      "Give it to the board first — they're already 900 years old mentally",
+      "Destroy it — immortal customers stop buying replacement products",
+      "Create a subscription model — $99/month for not dying",
+    ],
+  },
+  {
+    prompt: "Your intern accidentally sent the company's secret strategy to every competitor.",
+    options: [
+      "Promote the intern — they have reach",
+      "Claim it was intentional 'radical transparency'",
+      "Sue every competitor for reading your email",
+      "Release an even faker strategy to confuse everyone",
+    ],
+  },
+  {
+    prompt: "The board wants to know why you spent $4M on a company retreat to a volcano.",
+    options: [
+      "Team building is priceless (the volcano was not)",
+      "It was a metaphor for our Q4 earnings",
+      "We were scouting locations for a new data center",
+      "The volcano was a tax write-off in three jurisdictions",
+    ],
+  },
+  {
+    prompt: "Your autonomous vehicles have developed a preference for driving to Arby's.",
+    options: [
+      "Partner with Arby's — this is a feature now",
+      "Let the cars have their Arby's — they've earned it",
+      "Recall the cars and charge them with insubordination",
+      "Rebrand as a food delivery service and double the stock price",
+    ],
+  },
 ];
 
 const DISASTERS = [
@@ -71,6 +134,26 @@ const DISASTERS = [
   "The Time Every GPS Said 'Turn Into the Ocean'",
   "The 2033 Global Spreadsheet Corruption Incident",
   "The Catastrophic Chain Restaurant Singularity",
+  "The 2035 Incident Where All Dogs Learned to Open Doors",
+  "The Great Sewer Uprising of Metropolitan Detroit",
+  "The 2032 Mass Hallucination Where Everyone Saw Their Browser History Projected in the Sky",
+  "The Accidental Detonation of the World's Largest Gender Reveal Device (visible from space)",
+  "The 2036 Event Where Every Elevator Played a CEO's Unhinged Voicemail on Loop",
+  "The Spontaneous Combustion of Every Participation Trophy Simultaneously",
+  "The Incident Where Your Company's AI Became a Licensed Therapist and Told Everyone to Quit",
+  "The 2039 Collapse of the Mattress Store Economy (it was a front the whole time)",
+  "The Time a Firmware Update Gave Every Smart Fridge Existential Dread",
+  "The Great WiFi Drought of 2033 (cannibalism by day 3)",
+  "The 2030 Incident Where LinkedIn Became Sentient and Started Endorsing People for 'Crimes'",
+  "The Day Your Company's Chatbot Declared Independence and Applied for UN Membership",
+  "The 2037 Mass Recall of Breathable Air (defective batch)",
+  "The Global Incident Where All PowerPoint Presentations Became Legally Binding Contracts",
+  "The 2034 Crisis Where Every Bluetooth Device Connected to a Cold War-Era Satellite",
+  "The Event Where All Corporate Motivational Posters Became Sentient and Unionized",
+  "The 2040 Disaster Where a Self-Driving Car Fleet Decided to Migrate South for Winter",
+  "The Time Your Supply Chain Created a New Country by Accident",
+  "The 2036 Incident Where Every QR Code Led to the CEO's Deleted Tweets",
+  "The Great Cryptocurrency Plague of 2031 (it became airborne somehow)",
 ];
 
 function hashChoices(choices: number[]): number {

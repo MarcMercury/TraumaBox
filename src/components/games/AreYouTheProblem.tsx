@@ -62,6 +62,69 @@ const QUESTIONS: Question[] = [
       { label: "What's risk management?", score: 4 },
     ],
   },
+  {
+    scenario: "Your factory workers are passing out from fumes.",
+    options: [
+      { label: "Shut down and fix ventilation immediately", score: 0 },
+      { label: "Distribute essential oils and motivational quotes", score: 3 },
+      { label: "Rebrand the fainting as 'involuntary micro-meditation'", score: 4 },
+      { label: "Install a fan and call it a wellness initiative", score: 2 },
+    ],
+  },
+  {
+    scenario: "A whistleblower has evidence of fraud.",
+    options: [
+      { label: "Cooperate with investigators fully", score: 0 },
+      { label: "Offer the whistleblower a very generous 'severance'", score: 3 },
+      { label: "Destroy the evidence and blame a hacker", score: 4 },
+      { label: "Leak a counter-scandal about the whistleblower's Spotify playlists", score: 2 },
+    ],
+  },
+  {
+    scenario: "Your product caused 47 hospitalizations.",
+    options: [
+      { label: "Full recall and compensation immediately", score: 0 },
+      { label: "Release a statement saying they used it wrong", score: 3 },
+      { label: "Change the product name and re-release it next quarter", score: 4 },
+      { label: "Sue the hospitals for treating your customers badly", score: 4 },
+    ],
+  },
+  {
+    scenario: "An intern discovers your company's been laundering money.",
+    options: [
+      { label: "Self-report to authorities", score: 0 },
+      { label: "Make the intern CEO so they're now complicit", score: 4 },
+      { label: "Start laundering the money through a charity for extra irony", score: 3 },
+      { label: "Pivot the entire business model to crypto — it's laundering but legal-ish", score: 2 },
+    ],
+  },
+  {
+    scenario: "Your AI hiring tool has been rejecting every applicant named 'Kevin.'",
+    options: [
+      { label: "Fix the bias immediately and apologize", score: 0 },
+      { label: "Claim you've never liked Kevins anyway", score: 2 },
+      { label: "Rename the AI 'Kevin' so it's technically self-discrimination", score: 3 },
+      { label: "Market it as a premium feature", score: 4 },
+    ],
+  },
+  {
+    scenario: "Your company retreat resulted in a diplomatic incident with a sovereign nation.",
+    options: [
+      { label: "Issue a formal state apology through proper channels", score: 0 },
+      { label: "Claim team-building exercises are protected under maritime law", score: 3 },
+      { label: "Annex the country and add it to your org chart", score: 4 },
+      { label: "Send a fruit basket with a note that says 'our bad'", score: 2 },
+    ],
+  },
+  {
+    scenario: "Congress subpoenas your company records.",
+    options: [
+      { label: "Comply fully and transparently", score: 0 },
+      { label: "Comply, but print everything in 2pt font in Wingdings", score: 2 },
+      { label: "Claim executive privilege despite not being the executive branch", score: 3 },
+      { label: "Counter-sue Congress for wasting your time", score: 4 },
+    ],
+  },
 ];
 
 interface Result {
@@ -72,7 +135,7 @@ interface Result {
 }
 
 function getResult(score: number): Result {
-  if (score <= 4) {
+  if (score <= 6) {
     return {
       disasters: 0,
       hearings: 0,
@@ -80,7 +143,7 @@ function getResult(score: number): Result {
       verdict: "You're not the problem. This is boring. Please leave.",
     };
   }
-  if (score <= 10) {
+  if (score <= 15) {
     return {
       disasters: 1,
       hearings: 0,
@@ -88,7 +151,7 @@ function getResult(score: number): Result {
       verdict: "You would cause exactly one preventable disaster and feel sort of bad about it.",
     };
   }
-  if (score <= 16) {
+  if (score <= 25) {
     return {
       disasters: 3,
       hearings: 1,
@@ -96,11 +159,27 @@ function getResult(score: number): Result {
       verdict: "Three environmental disasters and one congressional hearing. HR is concerned.",
     };
   }
+  if (score <= 35) {
+    return {
+      disasters: 7,
+      hearings: 3,
+      title: "WALKING CATASTROPHE",
+      verdict: "You are personally responsible for multiple international incidents. The Hague would like a word.",
+    };
+  }
+  if (score <= 45) {
+    return {
+      disasters: 14,
+      hearings: 7,
+      title: "EXTINCTION-LEVEL EXECUTIVE",
+      verdict: "Entire ecosystems have collapsed in your wake. Your Wikipedia page has a war crimes section.",
+    };
+  }
   return {
-    disasters: 7,
-    hearings: 3,
-    title: "WALKING CATASTROPHE",
-    verdict: "You are personally responsible for multiple international incidents. The Hague would like a word.",
+    disasters: 31,
+    hearings: 12,
+    title: "HISTORY'S GREATEST MONSTER",
+    verdict: "You make the Permian extinction look like a mild inconvenience. Future civilizations will use your name as a curse word.",
   };
 }
 
