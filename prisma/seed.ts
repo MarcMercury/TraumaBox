@@ -160,17 +160,6 @@ const CONTENT_SEED = [
     consumptionTime: "5 minutes of rising water",
   },
   {
-    caseFileId: "ATCS-013",
-    title: "Inside Voices, Please!",
-    series: "Absolutely Terrible Children's Stories",
-    tokenCost: 50,
-    status: "OPENED",
-    classification: "CATASTROPHIC",
-    description: "A massive volcanic eruption with global atmospheric impact. Dramatic visuals and a boom heard around the world. The earth cleared its throat.",
-    sideEffects: "Volcanic dread, noise sensitivity",
-    consumptionTime: "5 minutes of rumbling tension",
-  },
-  {
     caseFileId: "ATCS-014",
     title: "Don't Forget Your Sunscreen!",
     series: "Absolutely Terrible Children's Stories",
