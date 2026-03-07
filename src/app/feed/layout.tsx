@@ -11,6 +11,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 const NAV_ITEMS = [
   { href: "/feed", label: "FEED", icon: "◉" },
   { href: "/feed/archives", label: "ARCHIVES", icon: "▤" },
+  { href: "/feed/arcade", label: "ARCADE", icon: "▣" },
   { href: "/feed/transactions", label: "LEDGER", icon: "◎" },
   { href: "/feed/shop", label: "TRAUMA KIT", icon: "☢" },
   { href: "/studio", label: "STUDIO", icon: "⬆" },

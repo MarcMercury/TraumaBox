@@ -17,7 +17,7 @@ const prisma = new PrismaClient({ adapter });
 const CONTENT_SEED = [
   {
     caseFileId: "ATCS-001",
-    title: "The Titanic: A Boat Ride Adventure",
+    title: "A Perfectly Safe Trip Across the Atlantic",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -40,7 +40,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-003",
-    title: "The Great Depression: Where Did All The Money Go?",
+    title: "Everyone Was Rich Yesterday",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -51,7 +51,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-004",
-    title: "Pompeii: A Nature Walk Gone Wrong",
+    title: "Niko Learns to Run",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -62,7 +62,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-005",
-    title: "The 2004 Indian Ocean Tsunami: A Very Big Wave",
+    title: "Let's Go Surfing!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -73,7 +73,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-006",
-    title: "Bhopal: The Invisible Cloud",
+    title: "The Very Responsible Chemical Company",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -84,7 +84,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-007",
-    title: "Fukushima: When The Earth Shook The Atom",
+    title: "Let's Go Surfing… Again!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -95,7 +95,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-008",
-    title: "The Great Fire of London: A City Learns to Rebuild",
+    title: "Learning to Bake!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -106,7 +106,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-009",
-    title: "Hiroshima & Nagasaki: The Day The Sun Fell Twice",
+    title: "Kenji Forgot His Sunglasses!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -129,7 +129,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-011",
-    title: "Deepwater Horizon: The Ocean Turned Black",
+    title: "Let's Dig a Hole!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -140,7 +140,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-012",
-    title: "Hurricane Katrina: When The Levees Broke",
+    title: "The City That Needed a Bigger Umbrella",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -151,7 +151,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-013",
-    title: "Krakatoa: The Loudest Sound on Earth",
+    title: "Inside Voices, Please!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -162,7 +162,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-014",
-    title: "The Ozone Hole: The Sky Got a Boo-Boo (And We Fixed It)",
+    title: "Don't Forget Your Sunscreen!",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
@@ -170,6 +170,29 @@ const CONTENT_SEED = [
     description: "Environmental damage reversed. The world actually cooperated and fixed it. A rare story that ends positively — proof that humans can occasionally get it right.",
     sideEffects: "Cautious optimism, sunscreen awareness",
     consumptionTime: "5 minutes ending with hope",
+  },
+  {
+    caseFileId: "ATCS-015",
+    title: "Sasha's Glowing Picnic",
+    series: "Absolutely Terrible Children's Stories",
+    tokenCost: 50,
+    status: "OPENED",
+    classification: "NUCLEAR",
+    description: "The worst nuclear disaster in history, told through a child's eyes. Invisible danger, abandoned cities, and lessons about the atoms we split but couldn't control.",
+    sideEffects: "Radiophobia, Geiger counter obsession",
+    consumptionTime: "8 minutes of glowing dread",
+    filePath: "/ATCS/ATCS%20Chernobyl.pdf",
+  },
+  {
+    caseFileId: "ATCS-016",
+    title: "Learning New Skills at Home",
+    series: "Absolutely Terrible Children's Stories",
+    tokenCost: 50,
+    status: "OPENED",
+    classification: "BIOHAZARD",
+    description: "A global pandemic locks everyone indoors. Toilet paper vanishes, sourdough rises, and the world learns that 'two weeks to flatten the curve' was optimistic at best.",
+    sideEffects: "Zoom fatigue, hand sanitizer dependency",
+    consumptionTime: "5 minutes of indefinite lockdown",
   },
 ];
 
