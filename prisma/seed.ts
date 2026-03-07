@@ -206,6 +206,30 @@ const CONTENT_SEED = [
     consumptionTime: "5 minutes of indefinite lockdown",
     filePath: "/ATCS/Covid.png",
   },
+  {
+    caseFileId: "ATCS-017",
+    title: "I Want THAT Balloon, Mommy!",
+    series: "Absolutely Terrible Children's Stories",
+    tokenCost: 50,
+    status: "OPENED",
+    classification: "CATASTROPHIC",
+    description: "The largest airship ever built meets its fiery end in New Jersey. A story about the hubris of hydrogen, the spectacle of disaster, and why sometimes the balloon you want is the one you should absolutely not have.",
+    sideEffects: "Balloon phobia, involuntary flinching near open flames",
+    consumptionTime: "5 minutes of explosive regret",
+    filePath: "/ATCS/Hindenburg.png",
+  },
+  {
+    caseFileId: "ATCS-018",
+    title: "Winter Picnic",
+    series: "Absolutely Terrible Children's Stories",
+    tokenCost: 50,
+    status: "OPENED",
+    classification: "CATASTROPHIC",
+    description: "A group of pioneers takes a shortcut through the Sierra Nevada in 1846. Snow arrives early, supplies run out, and dinner conversation takes a very dark turn. A cautionary tale about shortcuts, desperation, and what counts as 'food' when there's nothing left.",
+    sideEffects: "Permanent distrust of shortcuts, loss of appetite",
+    consumptionTime: "5 minutes of mounting hunger",
+    filePath: "/ATCS/Donner.png",
+  },
 ];
 
 async function main() {
