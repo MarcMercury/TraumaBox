@@ -25,6 +25,7 @@ const CONTENT_SEED = [
     description: "Pride, technology, class, and hubris collide on the unsinkable ship. A dramatic beginning, a devastating event, and a powerful moral about overconfidence and safety.",
     sideEffects: "Aquaphobia, trust issues with icebergs",
     consumptionTime: "5 minutes of sinking feeling",
+    filePath: "/ATCS/ATCS%20Titanic.png",
   },
   {
     caseFileId: "ATCS-002",
@@ -48,6 +49,7 @@ const CONTENT_SEED = [
     description: "Money disappeared, jobs vanished, and the world learned the hard way about systems and resilience. Economy collapse explained for tiny humans.",
     sideEffects: "Financial anxiety, piggy bank hoarding",
     consumptionTime: "5 minutes of economic dread",
+    filePath: "/ATCS/ATCS%20Depression.png",
   },
   {
     caseFileId: "ATCS-004",
@@ -59,6 +61,7 @@ const CONTENT_SEED = [
     description: "Nature's power — a volcano, ash, and a city frozen in time. Visually dramatic and mythic. The mountain was not sleeping.",
     sideEffects: "Volcanic anxiety, history trauma",
     consumptionTime: "5 minutes of escalating discomfort",
+    filePath: "/ATCS/ATCS%20Pompeii.png",
   },
   {
     caseFileId: "ATCS-005",

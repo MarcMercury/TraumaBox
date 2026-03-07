@@ -145,7 +145,7 @@ export default function FeedPage() {
               </span>
             </div>
 
-            {/* Thumbnail placeholder */}
+            {/* Thumbnail */}
             <div className="relative w-full h-40 bg-[#111] border border-[#222] mb-3 flex items-center justify-center overflow-hidden group">
               {file.status === "REDACTED" ? (
                 <div className="text-center">
@@ -153,6 +153,21 @@ export default function FeedPage() {
                   <div className="font-mono text-[10px] text-[#444]">
                     CONTENT REDACTED
                   </div>
+                </div>
+              ) : file.filePath && /\.(png|jpg|jpeg|webp)$/i.test(file.filePath) ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={file.filePath}
+                    alt={file.title}
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-1 left-2 font-mono text-[10px] text-[#888]">
+                    {file.classification}
+                  </div>
+                  {hoveredId === file.caseFileId && (
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent)] to-transparent opacity-10 animate-pulse" />
+                  )}
                 </div>
               ) : (
                 <div className="text-center relative">

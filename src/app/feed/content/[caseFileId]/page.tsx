@@ -167,6 +167,14 @@ export default function ContentViewerPage() {
               <div className="font-mono text-sm text-[#ccc] leading-relaxed whitespace-pre-wrap">
                 {content.body}
               </div>
+            ) : content.filePath && /\.(png|jpg|jpeg|webp)$/i.test(content.filePath) ? (
+              <div className="space-y-4">
+                <img
+                  src={content.filePath}
+                  alt={content.title}
+                  className="w-full border border-[#222]"
+                />
+              </div>
             ) : content.filePath ? (
               <div className="text-center py-8">
                 <a
