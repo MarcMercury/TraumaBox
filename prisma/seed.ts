@@ -183,7 +183,7 @@ const CONTENT_SEED = [
   },
   {
     caseFileId: "ATCS-015",
-    title: "Sasha's Glowing Picnic",
+    title: "Chernobyl: A Glowing Bedtime Story",
     series: "Absolutely Terrible Children's Stories",
     tokenCost: 50,
     status: "OPENED",
