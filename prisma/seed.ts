@@ -192,7 +192,7 @@ const CONTENT_SEED = [
     description: "The worst nuclear disaster in history, told through a child's eyes. Invisible danger, abandoned cities, and lessons about the atoms we split but couldn't control.",
     sideEffects: "Radiophobia, Geiger counter obsession",
     consumptionTime: "8 minutes of glowing dread",
-    filePath: "/ATCS/ATCS%20Chernobyl.pdf",
+    filePath: "/ATCS/Chernobyl.png",
   },
   {
     caseFileId: "ATCS-016",
