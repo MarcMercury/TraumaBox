@@ -204,6 +204,7 @@ const CONTENT_SEED = [
     description: "A global pandemic locks everyone indoors. Toilet paper vanishes, sourdough rises, and the world learns that 'two weeks to flatten the curve' was optimistic at best.",
     sideEffects: "Zoom fatigue, hand sanitizer dependency",
     consumptionTime: "5 minutes of indefinite lockdown",
+    filePath: "/ATCS/Covid.png",
   },
 ];
 
