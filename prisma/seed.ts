@@ -220,18 +220,6 @@ const CONTENT_SEED = [
     consumptionTime: "5 minutes of mounting hunger",
     filePath: "/ATCS/Donner.png",
   },
-  {
-    caseFileId: "ATCS-019",
-    title: "My Overseas Internship",
-    series: "Absolutely Terrible Children's Stories",
-    tokenCost: 50,
-    status: "OPENED",
-    classification: "CATASTROPHIC",
-    description: "Millions of people were offered an exciting unpaid internship across the ocean with no return ticket, no HR department, and a very strict dress code involving chains.",
-    sideEffects: "Righteous fury, permanent suspicion of 'job opportunities'",
-    consumptionTime: "6 minutes of historical reckoning",
-    filePath: "/ATCS/slave%20trade.png",
-  },
 ];
 
 async function main() {
