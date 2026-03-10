@@ -86,21 +86,21 @@ export default function FeedPage() {
           </h1>
         </div>
         <p className="font-mono text-xs text-[#555] ml-5">
-          OPEN MARKETPLACE — {caseFiles.length} CASE FILES FROM {new Set(caseFiles.map((f) => f.creatorName)).size} CONTRIBUTORS
+          OPEN FEED — {caseFiles.length} CASE FILES FROM {new Set(caseFiles.map((f) => f.creatorName)).size} CONTRIBUTORS
         </p>
       </div>
 
-      {/* Marketplace Banner */}
+      {/* Feed Banner */}
       <div className="border border-[#222] bg-[#0d0d0d] p-4 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="font-mono text-xs text-[#888]">
           <span className="text-[var(--terminal-green)]">THE LEAK PROTOCOL</span> — Anyone can publish.
-          Creators set prices. You spend tokens. They get 90%. We get 10%. Capitalism meets chaos.
+          Creators set token costs. You spend randomly assigned tokens. They get 90%. The house gets 10%. Chaos meets chaos.
         </div>
         <Link
           href="/studio"
           className="px-4 py-2 border border-[var(--terminal-green)] text-[var(--terminal-green)] font-mono text-xs hover:bg-[var(--terminal-green)] hover:text-black transition-all whitespace-nowrap"
         >
-          ⬆ SELL YOUR SOUL (90% COMMISSION) →
+          ⬆ ADD TO THE FEED →
         </Link>
       </div>
 
@@ -227,7 +227,7 @@ export default function FeedPage() {
               <div className="flex justify-between font-mono text-[10px]">
                 <span className="text-[#555]">TOKEN COST:</span>
                 <span className={`font-bold ${hasUnlocked(file.caseFileId) ? "text-[var(--terminal-green)]" : "text-[var(--accent)]"}`}>
-                  {hasUnlocked(file.caseFileId) ? "OWNED ✓" : `${file.tokenCost} T ($${(file.tokenCost * 0.01).toFixed(2)})`}
+                  {hasUnlocked(file.caseFileId) ? "OWNED ✓" : `${file.tokenCost} TOKENS`}
                 </span>
               </div>
             </div>
@@ -262,8 +262,8 @@ export default function FeedPage() {
                 {unlocking === file.caseFileId
                   ? "BURNING TOKENS..."
                   : (user?.tokenBalance ?? 0) >= file.tokenCost
-                  ? `Spend ${file.tokenCost} Tokens to ruin your day →`
-                  : `Need ${file.tokenCost - (user?.tokenBalance ?? 0)} more tokens`}
+                  ? `Burn ${file.tokenCost} Tokens to ruin your day →`
+                  : `Need ${file.tokenCost - (user?.tokenBalance ?? 0)} more tokens (refresh for new roll)`}
               </button>
             )}
 

@@ -75,7 +75,7 @@ export default function AgreementPage() {
                 <span className="text-[var(--terminal-green)]">1.3</span>{" "}
                 We are granted a <span className="text-white">limited, non-exclusive, revocable license</span>{" "}
                 to display and distribute your content on the Trauma Box platform solely for
-                the purpose of selling access to readers on your behalf. Think of us as a
+                the purpose of sharing it with readers on your behalf. Think of us as a
                 very grim bookshelf.
               </p>
               <p>
@@ -91,12 +91,12 @@ export default function AgreementPage() {
           {/* Section 2 */}
           <div>
             <h2 className="text-[var(--accent)] text-lg font-sans mb-2">
-              SECTION 2: THE MONEY (AKA &quot;COMPENSATION FOR DAMAGES&quot;)
+              SECTION 2: THE TOKENS (AKA &quot;IMAGINARY CURRENCY FOR IMAGINARY DAMAGE&quot;)
             </h2>
             <div className="space-y-3">
               <p>
                 <span className="text-[var(--terminal-green)]">2.1</span>{" "}
-                When a reader pays tokens to access your content, the revenue is split as
+                When a reader burns tokens to access your content, the tokens are split as
                 follows:
               </p>
               <div className="bg-black border border-[#333] p-4 my-3">
@@ -108,7 +108,7 @@ export default function AgreementPage() {
                   <div className="h-full bg-[var(--terminal-green)]" style={{ width: "90%" }} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#888]">Trauma Box (The Middleman)</span>
+                  <span className="text-[#888]">The House (Containment Fee)</span>
                   <span className="text-[var(--accent)] font-bold">10%</span>
                 </div>
                 <div className="w-full h-3 bg-[#222] mt-1">
@@ -117,29 +117,28 @@ export default function AgreementPage() {
               </div>
               <p>
                 <span className="text-[var(--terminal-green)]">2.2</span>{" "}
-                The 10% &quot;containment fee&quot; covers: server costs, payment processing,
-                platform maintenance, the therapist we should probably hire, and the
-                general overhead of running a marketplace for digital suffering.
+                The 10% &quot;containment fee&quot; goes to the House Tally — a running
+                count visible to everyone. It funds nothing. It means nothing.
+                It simply accumulates, like existential dread.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">2.3</span>{" "}
-                <span className="text-white font-bold">Token-to-USD conversion:</span>{" "}
-                1 token = $0.01 USD. If a reader pays 100 tokens for your content,
-                you earn 90 tokens ($0.90). We keep 10 tokens ($0.10). Simple math.
-                Suspiciously simple for a legal document.
+                <span className="text-white font-bold">Tokens have no monetary value.</span>{" "}
+                They are freely and randomly assigned to every visitor. They cannot be
+                purchased, sold, redeemed, or exchanged for anything of value.
+                They are chaos currency. This is a feature, not a bug.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">2.4</span>{" "}
-                <span className="text-white font-bold">Payout threshold:</span>{" "}
-                You may request a payout once your balance reaches{" "}
-                <span className="text-[var(--accent)]">2,000 tokens ($20.00)</span>.
-                This minimum exists because payment processors charge fees and we
-                refuse to lose money paying you $0.37.
+                <span className="text-white font-bold">There are no payouts.</span>{" "}
+                Tokens are not money. They never were. They never will be.
+                Your token tally is a scoreboard, not a bank account.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">2.5</span>{" "}
-                Payouts are processed via Stripe Connect. Allow 3-5 business days
-                for the traditional banking system to slowly acknowledge your existence.
+                Visitors receive a random allocation of tokens on every visit.
+                This means your content may be unlocked by anyone who rolls high enough.
+                The chaos economy is fair in its absolute unfairness.
               </p>
             </div>
           </div>
@@ -164,15 +163,14 @@ export default function AgreementPage() {
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">3.3</span>{" "}
-                You set your own prices between <span className="text-[var(--accent)]">10 and 1,000 tokens</span>{" "}
-                ($0.10 — $10.00). If you want to charge 1,000 tokens for a haiku about
+                You set your own token costs between <span className="text-[var(--accent)]">10 and 1,000 tokens</span>.
+                If you want to charge 1,000 tokens for a haiku about
                 a hamster, that&apos;s your right and we respect it, even if we question it.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">3.4</span>{" "}
-                You are responsible for any applicable taxes on your earnings. We will
-                provide tax documentation as required by law. We are not your accountant.
-                Please get an accountant.
+                Since tokens have no monetary value, there are no earnings to tax.
+                You can fire your accountant. Or keep them. We&apos;re not your life coach.
               </p>
             </div>
           </div>
@@ -190,8 +188,8 @@ export default function AgreementPage() {
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">4.2</span>{" "}
-                We will process your payouts in a timely manner and not &quot;accidentally&quot;
-                lose your money in a Cayman Islands shell company.
+                We will keep the random token generator sufficiently chaotic and not
+                &quot;accidentally&quot; rig it in our favor. Probably.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">4.3</span>{" "}
@@ -216,14 +214,13 @@ export default function AgreementPage() {
               <p>
                 <span className="text-[var(--terminal-green)]">5.1</span>{" "}
                 Either party may terminate this agreement at any time.
-                You can leave whenever you want. This is a marketplace, not a cult.
+                You can leave whenever you want. This is a feed, not a cult.
                 (We think.)
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">5.2</span>{" "}
-                Upon termination, any pending balance owed to you will be paid out
-                within 30 days, regardless of the minimum threshold. We&apos;re petty,
-                but not <em>that</em> petty.
+                Upon termination, your token tally evaporates like morning fog.
+                It was never real. You knew this. We all knew this.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">5.3</span>{" "}
@@ -255,7 +252,7 @@ export default function AgreementPage() {
                 <span className="text-[var(--terminal-green)]">6.3</span>{" "}
                 We may update this agreement from time to time. We will notify
                 you of material changes. &quot;Material&quot; means changes that affect your
-                money or rights, not changes to our emoji usage in error messages.
+                rights or token allocation, not changes to our emoji usage in error messages.
               </p>
               <p>
                 <span className="text-[var(--terminal-green)]">6.4</span>{" "}
@@ -277,11 +274,11 @@ export default function AgreementPage() {
               </li>
               <li className="flex gap-2">
                 <span className="text-[var(--terminal-green)]">✓</span>
-                <span>You get <span className="text-white font-bold">90%</span> of every sale.</span>
+                <span>You get <span className="text-white font-bold">90%</span> of every token burn.</span>
               </li>
               <li className="flex gap-2">
                 <span className="text-[var(--terminal-green)]">✓</span>
-                <span>We take <span className="text-[var(--accent)] font-bold">10%</span> for keeping the infrastructure alive.</span>
+                <span>The House takes <span className="text-[var(--accent)] font-bold">10%</span> for the tally. It means nothing.</span>
               </li>
               <li className="flex gap-2">
                 <span className="text-[var(--terminal-green)]">✓</span>
@@ -293,7 +290,7 @@ export default function AgreementPage() {
               </li>
               <li className="flex gap-2">
                 <span className="text-[var(--terminal-green)]">✓</span>
-                <span>We&apos;re just the shelf. You&apos;re the book. Readers pay to open you.</span>
+                <span>We&apos;re just the shelf. You&apos;re the book. Readers burn tokens to open you.</span>
               </li>
             </ul>
           </div>

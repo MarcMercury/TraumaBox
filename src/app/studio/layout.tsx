@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 
 const STUDIO_NAV = [
   { href: "/studio", label: "DASHBOARD", icon: "◎" },
-  { href: "/studio/submit", label: "UPLOAD", icon: "⬆" },
-  { href: "/studio/revenue", label: "BLOOD MONEY", icon: "💸" },
+  { href: "/studio/submit", label: "ADD TO FEED", icon: "⬆" },
+  { href: "/studio/revenue", label: "TOKEN TALLY", icon: "⚖" },
   { href: "/studio/agreement", label: "THE CONTRACT", icon: "📜" },
 ];
 

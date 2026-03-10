@@ -1,12 +1,19 @@
 // ─── GET /api/auth/me ───────────────────────────────
-// Returns current user info & balance.
-// In production, this checks a session/JWT.
-// For now, uses a demo user (auto-created).
+// Returns current user info & randomly assigned tokens.
+// Every visit = new random token allocation. No purchases. Pure chaos.
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import crypto from "crypto";
 
 const DEMO_EMAIL = "subject@trauma.box";
+
+/** Generate a cryptographically random token amount between 50 and 5000 */
+function rollRandomTokens(): number {
+  const bytes = crypto.randomBytes(2);
+  const value = bytes.readUInt16BE(0); // 0–65535
+  return 50 + (value % 4951); // 50–5000
+}
 
 async function getOrCreateDemoUser() {
   let user = await prisma.user.findUnique({
@@ -14,21 +21,37 @@ async function getOrCreateDemoUser() {
   });
 
   if (!user) {
+    const startingTokens = rollRandomTokens();
     user = await prisma.user.create({
       data: {
         email: DEMO_EMAIL,
         displayName: "TEST_SUBJECT_001",
-        tokenBalance: 250, // Free starter tokens
+        tokenBalance: startingTokens,
       },
     });
 
-    // Log the welcome bonus
     await prisma.transaction.create({
       data: {
         userId: user.id,
-        amount: 250,
+        amount: startingTokens,
         type: "BONUS",
-        detail: "Welcome to Trauma Box. Here are some tokens. You'll need them.",
+        detail: `Welcome to Trauma Box. The chaos assigned you ${startingTokens} tokens. Spend wisely. Or don't.`,
+      },
+    });
+  } else {
+    // Every session gets a fresh random token allocation
+    const newTokens = rollRandomTokens();
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { tokenBalance: newTokens },
+    });
+
+    await prisma.transaction.create({
+      data: {
+        userId: user.id,
+        amount: newTokens,
+        type: "BONUS",
+        detail: `The void has spoken. You've been assigned ${newTokens} tokens this session.`,
       },
     });
   }
@@ -38,8 +61,6 @@ async function getOrCreateDemoUser() {
 
 export async function GET() {
   try {
-    // In production: parse session cookie / JWT here
-    // For dev: always return demo user
     const user = await getOrCreateDemoUser();
 
     // Get unlocked content IDs

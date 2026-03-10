@@ -218,7 +218,7 @@ export default function ContentViewerPage() {
         <div className="border border-[var(--accent)] bg-[#0a0a0a] p-8 text-center">
           <div className="font-mono text-lg text-[var(--accent)] mb-2">🔒 CONTENT LOCKED</div>
           <div className="font-mono text-xs text-[#888] mb-6">
-            Pay <span className="text-[var(--accent)] font-bold">{content.tokenCost} tokens</span> (${(content.tokenCost * 0.01).toFixed(2)}) to access this case file.
+            Pay <span className="text-[var(--accent)] font-bold">{content.tokenCost} tokens</span> to access this case file.
             {user && (
               <span className="block mt-1 text-[#555]">
                 Your balance: {user.tokenBalance} tokens
@@ -240,7 +240,7 @@ export default function ContentViewerPage() {
           </button>
           {user && user.tokenBalance < content.tokenCost && (
             <div className="mt-3 font-mono text-[10px] text-[var(--danger)]">
-              INSUFFICIENT TOKENS — Visit the Token Shop to acquire more.
+              INSUFFICIENT TOKENS — Refresh the page for a new random token allocation.
             </div>
           )}
         </div>

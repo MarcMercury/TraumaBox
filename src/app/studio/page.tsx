@@ -8,8 +8,6 @@ interface CreatorStats {
   contentCount: number;
   pendingTokenBalance: number;
   totalSales: number;
-  pendingUsd: string;
-  totalEarnedUsd: string;
 }
 
 interface ContentItem {
@@ -96,7 +94,7 @@ export default function StudioDashboard() {
           </h1>
         </div>
         <p className="font-mono text-xs text-[#555] ml-5">
-          CREATOR DASHBOARD — SELL YOUR SOUL (90% COMMISSION)
+          CREATOR DASHBOARD — ADD TO THE FEED (90% TOKEN SHARE)
         </p>
       </div>
 
@@ -108,14 +106,13 @@ export default function StudioDashboard() {
           </h2>
           <div className="font-mono text-xs text-[#888] space-y-3 leading-relaxed">
             <p>
-              Trauma Box is now an <span className="text-[var(--terminal-green)]">open marketplace</span>.
-              Anyone can contribute content and charge whatever they want for access.
+              Trauma Box is now an <span className="text-[var(--terminal-green)]">open feed</span>.
+              Anyone can contribute content. Tokens are freely assigned — no money involved.
             </p>
             <p>
-              <span className="text-white">The deal is simple:</span> You create. You set the price.
-              Readers pay in tokens. You get <span className="text-[var(--terminal-green)]">90%</span>.
-              We keep <span className="text-[var(--accent)]">10%</span> for keeping the lights on
-              and pretending we have infrastructure.
+              <span className="text-white">The deal is simple:</span> You create. You set the token cost.
+              Readers spend their randomly assigned tokens. You get <span className="text-[var(--terminal-green)]">90%</span>.
+              The house keeps <span className="text-[var(--accent)]">10%</span> as a containment fee tally.
             </p>
             <p>
               You retain <span className="text-white">100% ownership</span> of your intellectual property.
@@ -144,15 +141,15 @@ export default function StudioDashboard() {
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <StatCard
-              label="TOTAL BLOOD MONEY"
-              value={`$${data.stats.totalEarnedUsd}`}
-              subValue={`${data.stats.totalTokensEarned} tokens earned`}
+              label="TOTAL TOKENS EARNED"
+              value={data.stats.totalTokensEarned.toLocaleString()}
+              subValue="tokens earned from unlocks"
               color="var(--terminal-green)"
             />
             <StatCard
-              label="PENDING BALANCE"
-              value={`$${data.stats.pendingUsd}`}
-              subValue={`${data.stats.pendingTokenBalance} tokens available`}
+              label="CURRENT TOKEN BALANCE"
+              value={data.stats.pendingTokenBalance.toLocaleString()}
+              subValue="tokens in your account"
               color="var(--accent)"
             />
             <StatCard
@@ -175,13 +172,13 @@ export default function StudioDashboard() {
               href="/studio/submit"
               className="px-6 py-3 bg-[var(--terminal-green)] text-black font-mono text-sm font-bold hover:bg-white transition-colors"
             >
-              ⬆ UPLOAD NEW CONTENT
+              ⬆ ADD TO FEED
             </Link>
             <Link
-              href="/studio/revenue"
+              href="/feed/tally"
               className="px-6 py-3 border border-[var(--accent)] text-[var(--accent)] font-mono text-sm hover:bg-[var(--accent)] hover:text-black transition-colors"
             >
-              💸 VIEW BLOOD MONEY
+              ⚖ VIEW HOUSE TALLY
             </Link>
           </div>
 
@@ -264,26 +261,26 @@ export default function StudioDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <div className="text-4xl">📤</div>
-            <h3 className="font-sans text-sm text-white">1. LEAK YOUR CONTENT</h3>
+            <h3 className="font-sans text-sm text-white">1. ADD TO THE FEED</h3>
             <p className="font-mono text-xs text-[#888] leading-relaxed">
               Upload stories, games, media — whatever fits the vibe.
-              Set your price between 10–1000 tokens. Your content, your rules.
+              Set your token cost between 10–1000. Your content, your rules.
             </p>
           </div>
           <div className="space-y-2">
-            <div className="text-4xl">💰</div>
-            <h3 className="font-sans text-sm text-white">2. COLLECT BLOOD MONEY</h3>
+            <div className="text-4xl">🎲</div>
+            <h3 className="font-sans text-sm text-white">2. RANDOM TOKEN ECONOMY</h3>
             <p className="font-mono text-xs text-[#888] leading-relaxed">
-              Every time someone unlocks your content, you get 90% of the tokens.
-              We take 10% — the &quot;containment fee&quot; — for running this operation.
+              Visitors get randomly assigned tokens each visit. When they unlock
+              your content, you get 90% of the tokens. The house gets 10%.
             </p>
           </div>
           <div className="space-y-2">
-            <div className="text-4xl">🏦</div>
-            <h3 className="font-sans text-sm text-white">3. CASH OUT</h3>
+            <div className="text-4xl">⚖</div>
+            <h3 className="font-sans text-sm text-white">3. THE TALLY</h3>
             <p className="font-mono text-xs text-[#888] leading-relaxed">
-              Once you hit 2,000 tokens ($20), you can request a payout.
-              Real money. In your real bank account. For your very real trauma content.
+              Check the House Tally to see the running totals.
+              Tokens are chaos currency — freely assigned, freely spent, worthless everywhere else.
             </p>
           </div>
         </div>

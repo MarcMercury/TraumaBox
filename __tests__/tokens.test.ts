@@ -4,11 +4,10 @@
 //
 // <debug>
 // These tests verify the following fixes:
-// 1. creditTokens rejects negative/zero amounts (prevents token theft)
-// 2. Transaction history limit is clamped to [1, 200]
-// 3. Revenue split math is always integer (no floating point tokens)
-// 4. unlockContent is idempotent (double-unlock returns error, not double-charge)
-// 5. requestPayout respects minimum threshold
+// 1. Transaction history limit is clamped to [1, 200]
+// 2. Revenue split math is always integer (no floating point tokens)
+// 3. unlockContent is idempotent (double-unlock returns error, not double-charge)
+// 4. Random token allocation boundaries
 // </debug>
 
 import { describe, it, expect, vi } from "vitest";
@@ -27,12 +26,6 @@ describe("Token Economy Constants", () => {
       "@/lib/tokens"
     );
     expect(PLATFORM_FEE_PERCENT + CREATOR_SHARE_PERCENT).toBe(100);
-  });
-
-  it("minimum payout is 2000 tokens ($20)", async () => {
-    const { MIN_PAYOUT_TOKENS } = await import("@/lib/tokens");
-    expect(MIN_PAYOUT_TOKENS).toBe(2000);
-    expect(MIN_PAYOUT_TOKENS * 0.01).toBe(20);
   });
 });
 
@@ -66,30 +59,6 @@ describe("Revenue Split Math", () => {
   });
 });
 
-describe("Token Pack Pricing", () => {
-  it("all packs have positive token counts and prices", async () => {
-    const { TOKEN_PACKS } = await import("@/lib/stripe");
-    for (const pack of TOKEN_PACKS) {
-      expect(pack.tokens).toBeGreaterThan(0);
-      expect(pack.priceUsd).toBeGreaterThan(0);
-    }
-  });
-
-  it("exchange rate is 1 token = $0.01", async () => {
-    const { TOKEN_PACKS } = await import("@/lib/stripe");
-    for (const pack of TOKEN_PACKS) {
-      // priceUsd is in cents, so tokens * 1 cent = priceUsd
-      expect(pack.priceUsd).toBe(pack.tokens);
-    }
-  });
-
-  it("all packs have unique IDs", async () => {
-    const { TOKEN_PACKS } = await import("@/lib/stripe");
-    const ids = TOKEN_PACKS.map((p) => p.id);
-    expect(new Set(ids).size).toBe(ids.length);
-  });
-});
-
 describe("API Helper - Clamp", () => {
   it("clamps values within range", async () => {
     const { clamp } = await import("@/lib/apiHelpers");
@@ -110,14 +79,6 @@ describe("Input Validation Boundaries", () => {
     expect(clampLimit(200)).toBe(200);
     expect(clampLimit(99999)).toBe(200);
     expect(clampLimit(Infinity)).toBe(200);
-  });
-
-  it("dev credit amount should be clamped between 1 and 99999", () => {
-    const clampCredit = (raw: number) => Math.min(Math.max(raw, 1), 99999);
-    expect(clampCredit(0)).toBe(1);
-    expect(clampCredit(-100)).toBe(1);
-    expect(clampCredit(500)).toBe(500);
-    expect(clampCredit(100000)).toBe(99999);
   });
 
   it("content token cost should be between 10 and 1000", () => {
@@ -150,22 +111,6 @@ describe("Case File ID Generation", () => {
 });
 
 describe("Security Invariants", () => {
-  it("negative credit amounts should be rejected", () => {
-    // creditTokens now validates amount > 0
-    // This test documents the expected behavior
-    const isValidCreditAmount = (amount: number): boolean => {
-      return Number.isFinite(amount) && amount > 0;
-    };
-
-    expect(isValidCreditAmount(100)).toBe(true);
-    expect(isValidCreditAmount(1)).toBe(true);
-    expect(isValidCreditAmount(0)).toBe(false);
-    expect(isValidCreditAmount(-1)).toBe(false);
-    expect(isValidCreditAmount(-100)).toBe(false);
-    expect(isValidCreditAmount(NaN)).toBe(false);
-    expect(isValidCreditAmount(Infinity)).toBe(false);
-  });
-
   it("user balance can never go below zero in unlock logic", () => {
     const canUnlock = (balance: number, cost: number): boolean => {
       return balance >= cost;
@@ -177,13 +122,13 @@ describe("Security Invariants", () => {
     expect(canUnlock(0, 10)).toBe(false);
   });
 
-  it("payout requires minimum token balance", () => {
-    const MIN_PAYOUT = 2000;
-    const canPayout = (balance: number): boolean => balance >= MIN_PAYOUT;
-
-    expect(canPayout(2000)).toBe(true);
-    expect(canPayout(5000)).toBe(true);
-    expect(canPayout(1999)).toBe(false);
-    expect(canPayout(0)).toBe(false);
+  it("random token allocation stays within bounds (50-5000)", () => {
+    // Simulating the random token generation logic
+    for (let i = 0; i < 1000; i++) {
+      const value = Math.floor(Math.random() * 65536); // simulated uint16
+      const tokens = 50 + (value % 4951);
+      expect(tokens).toBeGreaterThanOrEqual(50);
+      expect(tokens).toBeLessThanOrEqual(5000);
+    }
   });
 });

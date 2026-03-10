@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TokenProvider } from "@/components/TokenProvider";
 import WalletDisplay from "@/components/WalletDisplay";
-import TokenShop from "@/components/TokenShop";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 const NAV_ITEMS = [
@@ -13,7 +12,7 @@ const NAV_ITEMS = [
   { href: "/feed/archives", label: "ARCHIVES", icon: "▤" },
   { href: "/feed/arcade", label: "ARCADE", icon: "▣" },
   { href: "/feed/transactions", label: "LEDGER", icon: "◎" },
-  { href: "/feed/shop", label: "TRAUMA KIT", icon: "☢" },
+  { href: "/feed/tally", label: "HOUSE TALLY", icon: "⚖" },
   { href: "/studio", label: "STUDIO", icon: "⬆" },
   { href: "/feed/about", label: "DOSSIER", icon: "◈" },
 ];
@@ -28,7 +27,6 @@ export default function FeedLayout({
   const [panicMode, setPanicMode] = useState(false);
   const [uptime, setUptime] = useState(0);
   const [cookieBanner, setCookieBanner] = useState(true);
-  const [shopOpen, setShopOpen] = useState(false);
   const [pid] = useState(() => Math.floor(Math.random() * 9999));
   const [memUsage, setMemUsage] = useState(() => (Math.random() * 40 + 60).toFixed(1));
 
@@ -93,8 +91,8 @@ export default function FeedLayout({
 
         {/* Wallet bar */}
         <div className="flex items-center justify-between px-4 py-1 border-b border-[#1a1a1a]">
-          <div className="font-mono text-[10px] text-[#444]">TOKEN SUBSYSTEM v1.0</div>
-          <WalletDisplay onShopClick={() => setShopOpen(true)} />
+          <div className="font-mono text-[10px] text-[#444]">CHAOS TOKENS — RANDOMLY ASSIGNED</div>
+          <WalletDisplay />
         </div>
 
         {/* Main nav */}
@@ -175,8 +173,7 @@ export default function FeedLayout({
         </div>
       )}
 
-      {/* Token Shop Modal */}
-      <TokenShop isOpen={shopOpen} onClose={() => setShopOpen(false)} />
+      {/* Token Shop Modal — REMOVED: Tokens are free now */}
     </div>
     </TokenProvider>
   );

@@ -1,5 +1,6 @@
 // ─── Token Provider ─────────────────────────────────
 // Global context for wallet state across the app
+// Tokens are freely assigned — no purchases, no money
 
 "use client";
 
@@ -25,7 +26,6 @@ interface TokenContextType {
   loading: boolean;
   refreshUser: () => Promise<void>;
   unlockContent: (caseFileId: string) => Promise<{ success: boolean; message: string }>;
-  devCredit: (amount: number) => Promise<void>;
   hasUnlocked: (caseFileId: string) => boolean;
 }
 
@@ -84,27 +84,6 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const devCredit = useCallback(
-    async (amount: number) => {
-      try {
-        const res = await fetch("/api/tokens/dev-credit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          setUser((prev) =>
-            prev ? { ...prev, tokenBalance: data.balance } : null
-          );
-        }
-      } catch (err) {
-        console.error("[DevCredit]", err);
-      }
-    },
-    []
-  );
-
   const hasUnlocked = useCallback(
     (caseFileId: string) => {
       return user?.unlockedCaseFileIds.includes(caseFileId) ?? false;
@@ -114,7 +93,7 @@ export function TokenProvider({ children }: { children: ReactNode }) {
 
   return (
     <TokenContext.Provider
-      value={{ user, loading, refreshUser, unlockContent, devCredit, hasUnlocked }}
+      value={{ user, loading, refreshUser, unlockContent, hasUnlocked }}
     >
       {children}
     </TokenContext.Provider>

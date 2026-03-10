@@ -1,12 +1,13 @@
 // ─── Wallet Display ─────────────────────────────────
 // Persistent glitchy token counter for the header
+// Tokens are freely assigned chaos currency — no money involved
 
 "use client";
 
 import { useState, useEffect } from "react";
 import { useTokens } from "./TokenProvider";
 
-export default function WalletDisplay({ onShopClick }: { onShopClick?: () => void }) {
+export default function WalletDisplay() {
   const { user, loading } = useTokens();
   const [displayBalance, setDisplayBalance] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -63,11 +64,10 @@ export default function WalletDisplay({ onShopClick }: { onShopClick?: () => voi
   if (!user) return null;
 
   return (
-    <button
-      onClick={onShopClick}
+    <div
       className="wallet-display group"
-      title="Click to open Token Shop"
-      aria-label={`Token balance: ${user.tokenBalance} tokens ($${(user.tokenBalance * 0.01).toFixed(2)}). Click to open shop.`}
+      title="Randomly assigned chaos tokens"
+      aria-label={`Token balance: ${user.tokenBalance} tokens. Randomly assigned.`}
     >
       <div className="flex items-center gap-2">
         {/* Token icon */}
@@ -94,15 +94,15 @@ export default function WalletDisplay({ onShopClick }: { onShopClick?: () => voi
         </span>
 
         {/* Label */}
-        <span className="font-mono text-[10px] text-[#555] group-hover:text-[var(--accent)] transition-colors">
+        <span className="font-mono text-[10px] text-[#555]">
           TOKENS
         </span>
 
-        {/* USD equivalent */}
+        {/* Randomly assigned indicator */}
         <span className="font-mono text-[10px] text-[#333]">
-          (${(displayBalance * 0.01).toFixed(2)})
+          [RANDOM]
         </span>
       </div>
-    </button>
+    </div>
   );
 }

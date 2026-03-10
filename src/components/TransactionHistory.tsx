@@ -149,7 +149,7 @@ export default function TransactionHistory() {
             NO TRANSACTIONS FOUND — THE LEDGER IS EMPTY
             <br />
             <span className="text-[10px] text-[#333]">
-              (Start by buying some tokens or unlocking content)
+              (Unlock some content to see transactions here)
             </span>
           </div>
         ) : (

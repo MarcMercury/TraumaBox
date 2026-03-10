@@ -99,7 +99,7 @@ export default function SubmitPage() {
           </h1>
         </div>
         <p className="font-mono text-xs text-[#555] ml-5">
-          UPLOAD EVIDENCE — SET YOUR PRICE — RETAIN YOUR RIGHTS
+          ADD TO THE FEED — SET YOUR TOKEN COST — RETAIN YOUR RIGHTS
         </p>
       </div>
 
@@ -225,13 +225,13 @@ export default function SubmitPage() {
               </div>
             </div>
             <div className="mt-1 font-mono text-[10px] text-[#555]">
-              ${(form.tokenCost * 0.01).toFixed(2)} USD • You earn{" "}
+              You earn{" "}
               <span className="text-[var(--terminal-green)]">
-                {Math.floor(form.tokenCost * 0.9)} TKN (${(Math.floor(form.tokenCost * 0.9) * 0.01).toFixed(2)})
+                {Math.floor(form.tokenCost * 0.9)} TKN (90%)
               </span>{" "}
-              • Platform fee:{" "}
+              • House fee:{" "}
               <span className="text-[var(--accent)]">
-                {form.tokenCost - Math.floor(form.tokenCost * 0.9)} TKN
+                {form.tokenCost - Math.floor(form.tokenCost * 0.9)} TKN (10%)
               </span>
             </div>
           </div>
@@ -267,26 +267,23 @@ export default function SubmitPage() {
 
         {/* Revenue Preview */}
         <div className="border border-[#222] bg-[#0d0d0d] p-4">
-          <h3 className="font-mono text-xs text-[#888] mb-3">REVENUE PREVIEW</h3>
+          <h3 className="font-mono text-xs text-[#888] mb-3">TOKEN SPLIT PREVIEW</h3>
           <div className="grid grid-cols-3 gap-4 font-mono text-xs">
             <div>
-              <div className="text-[#555]">READER PAYS</div>
+              <div className="text-[#555]">READER BURNS</div>
               <div className="text-white text-lg">{form.tokenCost} TKN</div>
-              <div className="text-[#444]">${(form.tokenCost * 0.01).toFixed(2)}</div>
             </div>
             <div>
               <div className="text-[#555]">YOU EARN (90%)</div>
               <div className="text-[var(--terminal-green)] text-lg">
                 {Math.floor(form.tokenCost * 0.9)} TKN
               </div>
-              <div className="text-[#444]">${(Math.floor(form.tokenCost * 0.9) * 0.01).toFixed(2)}</div>
             </div>
             <div>
-              <div className="text-[#555]">CONTAINMENT FEE (10%)</div>
+              <div className="text-[#555]">HOUSE TALLY (10%)</div>
               <div className="text-[var(--accent)] text-lg">
                 {form.tokenCost - Math.floor(form.tokenCost * 0.9)} TKN
               </div>
-              <div className="text-[#444]">${((form.tokenCost - Math.floor(form.tokenCost * 0.9)) * 0.01).toFixed(2)}</div>
             </div>
           </div>
         </div>
@@ -324,7 +321,7 @@ export default function SubmitPage() {
               : "bg-[var(--terminal-green)] text-black hover:bg-white"
           }`}
         >
-          {submitting ? "CONTAINING YOUR TRAUMA..." : "📤 SUBMIT TO THE LEAK PROTOCOL"}
+          {submitting ? "CONTAINING YOUR TRAUMA..." : "📤 ADD TO THE FEED"}
         </button>
       </form>
     </div>

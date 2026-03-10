@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
-  // Stripe webhook needs raw body — exclude from body parsers
   serverExternalPackages: ["pg"],
   // Production optimizations
   poweredByHeader: false,

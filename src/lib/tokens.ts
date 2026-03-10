@@ -1,6 +1,7 @@
 // ─── Token Operations (The Burn Protocol) ──────────
 // All token mutations go through here for atomicity
 // Revenue split: 90% creator / 10% platform (containment fee)
+// Tokens are freely assigned — no real money, just chaos currency
 
 import { prisma } from "./db";
 import type { PrismaClient } from "@/generated/prisma/client";
@@ -11,8 +12,6 @@ type TxClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transa
 /** Platform revenue split — the "containment fee" */
 export const PLATFORM_FEE_PERCENT = 10;
 export const CREATOR_SHARE_PERCENT = 90;
-/** Minimum tokens to cash out (2000 = $20.00) */
-export const MIN_PAYOUT_TOKENS = 2000;
 
 /**
  * Check if a user has unlocked a specific piece of content
@@ -33,46 +32,6 @@ export async function getBalance(userId: string): Promise<number> {
     select: { tokenBalance: true },
   });
   return user?.tokenBalance ?? 0;
-}
-
-/**
- * Credit tokens to a user (from Stripe purchase, bonus, etc.)
- * Amount is validated server-side — rejects non-positive values.
- */
-export async function creditTokens(
-  userId: string,
-  amount: number,
-  detail: string,
-  reference?: string
-): Promise<{ balance: number }> {
-  // Security: reject non-positive amounts to prevent balance manipulation
-  if (!Number.isFinite(amount) || amount <= 0) {
-    throw new Error("INVALID_AMOUNT: Token credit must be a positive number");
-  }
-  const safeAmount = Math.floor(amount); // Ensure integer
-
-  const result = await prisma.$transaction(async (tx: TxClient) => {
-    // Credit the balance
-    const user = await tx.user.update({
-      where: { id: userId },
-      data: { tokenBalance: { increment: safeAmount } },
-    });
-
-    // Log the transaction
-    await tx.transaction.create({
-      data: {
-        userId,
-        amount: +safeAmount,
-        type: "PURCHASE",
-        detail,
-        reference,
-      },
-    });
-
-    return user;
-  });
-
-  return { balance: result.tokenBalance };
 }
 
 /**
@@ -190,7 +149,7 @@ export async function unlockContent(
       CONTENT_NOT_FOUND: "This trauma doesn't exist. Lucky you.",
       ALREADY_UNLOCKED: "You already own this disappointment.",
       USER_NOT_FOUND: "Who are you? Seriously.",
-      INSUFFICIENT_TOKENS: "Not enough tokens. Buy more suffering.",
+      INSUFFICIENT_TOKENS: "Not enough tokens. Refresh for a new random allocation.",
     };
     return { success: false, message: messages[msg] ?? "Something broke. It wasn't your fault. Probably." };
   }
@@ -221,25 +180,21 @@ export async function getUserLibrary(userId: string) {
 }
 
 /**
- * Get creator stats — total earnings, content count, pending balance
+ * Get creator stats — total earnings, content count, token balance
  */
 export async function getCreatorStats(creatorId: string) {
   const [totalEarnings, contentCount, pendingBalance, totalSales] = await Promise.all([
-    // Total tokens earned all-time from revenue ledger
     prisma.revenueLedger.aggregate({
       where: { creatorId },
       _sum: { creatorShare: true },
     }),
-    // Number of published content pieces
     prisma.content.count({
       where: { creatorId },
     }),
-    // Current token balance (their cash-out-able amount)
     prisma.user.findUnique({
       where: { id: creatorId },
       select: { tokenBalance: true },
     }),
-    // Total number of sales (unlocks)
     prisma.revenueLedger.count({
       where: { creatorId },
     }),
@@ -250,8 +205,6 @@ export async function getCreatorStats(creatorId: string) {
     contentCount,
     pendingTokenBalance: pendingBalance?.tokenBalance ?? 0,
     totalSales,
-    pendingUsd: ((pendingBalance?.tokenBalance ?? 0) * 0.01).toFixed(2),
-    totalEarnedUsd: ((totalEarnings._sum.creatorShare ?? 0) * 0.01).toFixed(2),
   };
 }
 
@@ -274,62 +227,25 @@ export async function getCreatorRevenue(creatorId: string) {
 }
 
 /**
- * Process a payout request — deduct tokens and create payout record
+ * Get the platform tally — total tokens collected as the 10% "house" fee
+ * and total tokens distributed to creators. Visible to everyone.
  */
-export async function requestPayout(
-  userId: string
-): Promise<{ success: boolean; message: string; payoutId?: string }> {
-  try {
-    const result = await prisma.$transaction(async (tx: TxClient) => {
-      const user = await tx.user.findUnique({ where: { id: userId } });
-      if (!user) throw new Error("USER_NOT_FOUND");
-      if (user.role !== "CONTRIBUTOR" && user.role !== "ADMIN") throw new Error("NOT_A_CONTRIBUTOR");
-      if (user.tokenBalance < MIN_PAYOUT_TOKENS) throw new Error("BELOW_MINIMUM");
+export async function getPlatformTally() {
+  const [platformTotal, creatorTotal, totalTransactions, totalUnlocks] = await Promise.all([
+    prisma.revenueLedger.aggregate({
+      _sum: { platformFee: true },
+    }),
+    prisma.revenueLedger.aggregate({
+      _sum: { creatorShare: true },
+    }),
+    prisma.revenueLedger.count(),
+    prisma.library.count(),
+  ]);
 
-      const tokenAmount = user.tokenBalance;
-      const usdAmount = tokenAmount; // 1 token = 1 cent
-
-      // Zero out the balance
-      await tx.user.update({
-        where: { id: userId },
-        data: { tokenBalance: 0 },
-      });
-
-      // Log the withdrawal
-      await tx.transaction.create({
-        data: {
-          userId,
-          amount: -tokenAmount,
-          type: "PAYOUT",
-          detail: `Payout requested: ${tokenAmount} tokens ($${(usdAmount / 100).toFixed(2)})`,
-        },
-      });
-
-      // Create payout record
-      const payout = await tx.payout.create({
-        data: {
-          userId,
-          tokenAmount,
-          usdAmount,
-          status: "PENDING",
-        },
-      });
-
-      return { payoutId: payout.id, tokenAmount, usdAmount };
-    });
-
-    return {
-      success: true,
-      message: `Payout initiated: ${result.tokenAmount} tokens ($${(result.usdAmount / 100).toFixed(2)}). The blood money is on its way.`,
-      payoutId: result.payoutId,
-    };
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : "UNKNOWN_ERROR";
-    const messages: Record<string, string> = {
-      USER_NOT_FOUND: "Ghost detected. Cannot pay ghosts.",
-      NOT_A_CONTRIBUTOR: "You haven't contributed anything. Nice try.",
-      BELOW_MINIMUM: `Minimum payout: ${MIN_PAYOUT_TOKENS} tokens ($${(MIN_PAYOUT_TOKENS * 0.01).toFixed(2)}). Keep grinding.`,
-    };
-    return { success: false, message: messages[msg] ?? "Payout failed. The universe is indifferent to your financial needs." };
-  }
+  return {
+    platformTokens: platformTotal._sum.platformFee ?? 0,
+    creatorTokens: creatorTotal._sum.creatorShare ?? 0,
+    totalTransactions,
+    totalUnlocks,
+  };
 }

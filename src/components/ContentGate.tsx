@@ -104,7 +104,6 @@ export default function ContentGate({
               <span className={`font-bold ${canAfford ? "text-[var(--accent)]" : "text-red-500"}`}>
                 {tokenCost}
               </span>
-              <span className="text-[#444] ml-1">(${(tokenCost * 0.01).toFixed(2)})</span>
             </div>
 
             {/* The sardonic unlock button */}
@@ -124,13 +123,13 @@ export default function ContentGate({
               {isUnlocking
                 ? "PROCESSING EMOTIONAL TRANSACTION..."
                 : canAfford
-                ? `Exchange ${tokenCost} Tokens for this disappointment`
+                ? `Burn ${tokenCost} Tokens for this disappointment`
                 : `INSUFFICIENT TOKENS (Need ${tokenCost - (user?.tokenBalance ?? 0)} more)`}
             </button>
 
             {!canAfford && (
               <p className="font-mono text-[10px] text-[#444]">
-                Visit the TRAUMA KIT to acquire more tokens
+                Refresh the page for a new random token allocation
               </p>
             )}
 
