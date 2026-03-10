@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTokens } from "@/components/TokenProvider";
 import AtrocityAptitudeTest from "@/components/games/AtrocityAptitudeTest";
 import DisasterCEO from "@/components/games/DisasterCEO";
 import HistoricalScapegoat from "@/components/games/HistoricalScapegoat";
@@ -106,8 +107,26 @@ const GAMES: GameDef[] = [
 
 export default function ArcadePage() {
   const [activeGame, setActiveGame] = useState<string | null>(null);
+  const [burnError, setBurnError] = useState<string | null>(null);
+  const [burning, setBurning] = useState(false);
+  const { user, burnArcadeTokens } = useTokens();
+
+  const GAME_COST = 25;
 
   const active = GAMES.find((g) => g.id === activeGame);
+
+  const handleLaunch = async (game: GameDef) => {
+    setBurnError(null);
+    setBurning(true);
+    const result = await burnArcadeTokens(game.id, game.title);
+    setBurning(false);
+    if (result.success) {
+      setActiveGame(game.id);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      setBurnError(result.message);
+    }
+  };
 
   return (
     <div className="max-w-4xl">
@@ -119,8 +138,15 @@ export default function ArcadePage() {
         </h1>
       </div>
       <p className="font-mono text-xs text-[#555] ml-5 mb-8">
-        MICRO-GAMES DIVISION — INTERACTIVE CONTAINMENT PROTOCOLS — USE AT YOUR OWN RISK
+        MICRO-GAMES DIVISION — INTERACTIVE CONTAINMENT PROTOCOLS — 25 TOKENS PER PLAY
       </p>
+
+      {/* Burn error feedback */}
+      {burnError && (
+        <div className="mb-6 border border-red-500/30 bg-red-500/5 p-3 font-mono text-xs text-red-400">
+          <span className="text-red-500 font-bold">ERROR:</span> {burnError}
+        </div>
+      )}
 
       {/* Active Game */}
       {active && (
@@ -170,12 +196,10 @@ export default function ArcadePage() {
           {GAMES.filter((g) => g.id !== activeGame).map((game) => (
             <button
               key={game.id}
-              onClick={() => {
-                setActiveGame(game.id);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              aria-label={`Launch ${game.title}`}
-              className="text-left border border-[#222] bg-[#0d0d0d] p-4 hover:border-[var(--accent)] transition-all group"
+              onClick={() => handleLaunch(game)}
+              disabled={burning}
+              aria-label={`Launch ${game.title} — ${GAME_COST} tokens`}
+              className="text-left border border-[#222] bg-[#0d0d0d] p-4 hover:border-[var(--accent)] transition-all group disabled:opacity-50 disabled:cursor-wait"
             >
               <div className="flex items-start gap-3">
                 <span className="text-2xl opacity-60 group-hover:opacity-100 transition-opacity">
@@ -189,9 +213,16 @@ export default function ArcadePage() {
                     {game.subtitle}
                   </p>
                 </div>
-                <span className="font-mono text-[10px] text-[#333] group-hover:text-[var(--accent)] transition-colors">
-                  LAUNCH ▸
-                </span>
+                <div className="flex flex-col items-end gap-1">
+                  <span className="font-mono text-[10px] text-[var(--accent)]">
+                    {GAME_COST} T
+                  </span>
+                  <span className={`font-mono text-[10px] group-hover:text-[var(--accent)] transition-colors ${
+                    (user?.tokenBalance ?? 0) < GAME_COST ? "text-red-500" : "text-[#333]"
+                  }`}>
+                    {burning ? "BURNING..." : "LAUNCH ▸"}
+                  </span>
+                </div>
               </div>
             </button>
           ))}

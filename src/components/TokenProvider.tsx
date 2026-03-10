@@ -26,6 +26,7 @@ interface TokenContextType {
   loading: boolean;
   refreshUser: () => Promise<void>;
   unlockContent: (caseFileId: string) => Promise<{ success: boolean; message: string }>;
+  burnArcadeTokens: (gameId: string, gameTitle: string) => Promise<{ success: boolean; message: string }>;
   hasUnlocked: (caseFileId: string) => boolean;
 }
 
@@ -91,9 +92,33 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     [user?.unlockedCaseFileIds]
   );
 
+  const burnArcadeTokens = useCallback(
+    async (gameId: string, gameTitle: string): Promise<{ success: boolean; message: string }> => {
+      try {
+        const res = await fetch("/api/arcade/burn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ gameId, gameTitle }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          setUser((prev) =>
+            prev ? { ...prev, tokenBalance: data.balance } : null
+          );
+        }
+
+        return { success: data.success ?? false, message: data.message ?? data.error };
+      } catch {
+        return { success: false, message: "Network error. The arcade is offline." };
+      }
+    },
+    []
+  );
+
   return (
     <TokenContext.Provider
-      value={{ user, loading, refreshUser, unlockContent, hasUnlocked }}
+      value={{ user, loading, refreshUser, unlockContent, burnArcadeTokens, hasUnlocked }}
     >
       {children}
     </TokenContext.Provider>

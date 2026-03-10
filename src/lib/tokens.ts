@@ -155,6 +155,57 @@ export async function unlockContent(
   }
 }
 
+/** Cost to play an arcade game */
+export const ARCADE_GAME_COST = 25;
+
+/**
+ * Burn tokens for an arcade game play.
+ * All tokens go to the house — no creator split.
+ */
+export async function burnArcadeTokens(
+  userId: string,
+  gameId: string,
+  gameTitle: string
+): Promise<{ success: boolean; message: string; balance?: number }> {
+  try {
+    const result = await prisma.$transaction(async (tx: TxClient) => {
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      if (!user) throw new Error("USER_NOT_FOUND");
+      if (user.tokenBalance < ARCADE_GAME_COST) throw new Error("INSUFFICIENT_TOKENS");
+
+      const updatedUser = await tx.user.update({
+        where: { id: userId },
+        data: { tokenBalance: { decrement: ARCADE_GAME_COST } },
+      });
+
+      await tx.transaction.create({
+        data: {
+          userId,
+          amount: -ARCADE_GAME_COST,
+          type: "SPEND",
+          detail: `Arcade: ${gameTitle}`,
+          reference: `arcade:${gameId}`,
+        },
+      });
+
+      return { balance: updatedUser.tokenBalance };
+    });
+
+    return {
+      success: true,
+      message: `Inserted ${ARCADE_GAME_COST} tokens. Game loaded.`,
+      balance: result.balance,
+    };
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "UNKNOWN_ERROR";
+    const messages: Record<string, string> = {
+      USER_NOT_FOUND: "Who are you? Seriously.",
+      INSUFFICIENT_TOKENS: "Not enough tokens. Refresh for a new random allocation.",
+    };
+    return { success: false, message: messages[msg] ?? "The arcade machine ate your tokens. Sorry." };
+  }
+}
+
 /**
  * Get a user's complete transaction history
  */
