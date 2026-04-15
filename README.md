@@ -11,7 +11,7 @@ A Next.js web application housing the **Trauma Box** ecosystem — a platform fo
 - **Language:** TypeScript 5 (strict mode)
 - **Database:** PostgreSQL via Supabase + Prisma 7 ORM
 - **Validation:** Zod schema validation on API inputs
-- **Auth:** Supabase Auth (SSR-ready with `@supabase/ssr`)
+- **Auth:** Demo mode (placeholder for production auth)
 - **Deployment:** Vercel
 - **Domain:** GoDaddy
 

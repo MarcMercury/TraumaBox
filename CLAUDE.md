@@ -20,7 +20,7 @@ Token-gated content with a 90/10 creator/house split. Tokens are free, random, a
 | Database     | PostgreSQL via Supabase                 |
 | ORM          | Prisma 7 with `@prisma/adapter-pg`     |
 | Validation   | Zod 4                                  |
-| Auth         | Supabase Auth (SSR-ready) — demo mode  |
+| Auth         | Demo mode (placeholder)                |
 | Testing      | Vitest + React Testing Library         |
 | Deployment   | Vercel                                 |
 
