@@ -32,9 +32,42 @@ interface TokenContextType {
 
 const TokenContext = createContext<TokenContextType | null>(null);
 
+const SESSION_CACHE_KEY = "tb_user_cache";
+
+function getCachedUser(): UserState | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as UserState;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedUser(user: UserState | null) {
+  try {
+    if (user) {
+      sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(user));
+    } else {
+      sessionStorage.removeItem(SESSION_CACHE_KEY);
+    }
+  } catch {
+    // sessionStorage unavailable (SSR, private mode) — silent fail
+  }
+}
+
 export function TokenProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserState | null>(null);
+  const [user, setUserState] = useState<UserState | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Wrap setUser to keep sessionStorage in sync
+  const setUser = useCallback((update: UserState | null | ((prev: UserState | null) => UserState | null)) => {
+    setUserState((prev) => {
+      const next = typeof update === "function" ? update(prev) : update;
+      setCachedUser(next);
+      return next;
+    });
+  }, []);
 
   const refreshUser = useCallback(async () => {
     try {
@@ -48,11 +81,18 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setUser]);
 
   useEffect(() => {
+    // Use cached data if available — skip the API call entirely
+    const cached = getCachedUser();
+    if (cached) {
+      setUser(cached);
+      setLoading(false);
+      return;
+    }
     refreshUser();
-  }, [refreshUser]);
+  }, [refreshUser, setUser]);
 
   const unlockContent = useCallback(
     async (caseFileId: string): Promise<{ success: boolean; message: string }> => {
